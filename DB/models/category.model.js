@@ -16,11 +16,11 @@ const categorySchema = Schema({
     image: {
         secure_url: {
             type: String,
-            required: true
+            required: false//🚩
         },
         public_id: {
             type: String,
-            required: true
+            required: false//🚩
         }
     },
     createdBy: {
