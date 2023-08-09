@@ -14,14 +14,8 @@ const categorySchema = Schema({
         lowercase: true,
     },
     image: {
-        secure_url: {
-            type: String,
-            required: false//🚩
-        },
-        public_id: {
-            type: String,
-            required: false//🚩
-        }
+        secure_url: String,
+        public_id: String,
     },
     createdBy: {
         type: Schema.Types.ObjectId,
