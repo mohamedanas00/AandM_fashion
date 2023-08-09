@@ -11,11 +11,6 @@ export const addSubcategory = {
     file: generalFields.file
 }
 
-export const getAllSubcategors = {
-    body: joi.object({
-        id: generalFields.id
-    }).required(),
-}
 
 export const deleteSubCategory = {
     body: joi.object({

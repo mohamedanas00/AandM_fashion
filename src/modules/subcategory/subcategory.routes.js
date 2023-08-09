@@ -8,7 +8,7 @@ const subcategoryRouter = Router()
 subcategoryRouter.post('/', fileUpload(fileValidation.image).single('image'),
     validation(validator.addSubcategory), subcategoryController.addSubcategory)
 
-subcategoryRouter.get('/', validation(validator.getAllSubcategors), subcategoryController.getAllSubcategors)
+subcategoryRouter.get('/', subcategoryController.getAllSubcategors)
 
 subcategoryRouter.delete('/:id', fileUpload(fileValidation.image).single('image'),
     validation(validator.deleteSubCategory),

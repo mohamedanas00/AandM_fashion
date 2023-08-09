@@ -16,7 +16,9 @@ export const addCategory = asyncHandler(async (req, res, next) => {
 })
 
 export const getAllCategors = asyncHandler(async (req, res, next) => {
-    const categorys = await categoryModel.find()
+    const categorys = await categoryModel.find().populate([{
+        path: 'Subcategorise'
+    }])
 
     return res.status(200).json({ message: "Done", categorys })
 })
