@@ -11,7 +11,7 @@ const initApp = (app, express) => {
     app.use('/category', categoryRouter)
 
     app.use('*', (req, res, next) => {
-        res.json("In-valid Routing❌ check url  or  method")
+        res.json("In-valid Routing check url  or  method")
     })
     connectDB()
 }
