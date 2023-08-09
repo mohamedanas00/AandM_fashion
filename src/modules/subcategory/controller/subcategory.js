@@ -1,38 +1,45 @@
+import slugify from "slugify";
 import categoryModel from "../../../../DB/models/category.model.js";
+import subcategoryModel from "../../../../DB/models/subcategory.model.js";
 import cloudinary from "../../../utils/cloudinary.js";
-import slugify from 'slugify'
 import { asyncHandler } from "../../../utils/errorHandling.js";
 
-export const addCategory = asyncHandler(async (req, res, next) => {
-    let { name } = req.body
-    const isExist = await categoryModel.findOne({ name: name })
-    if (isExist) {
-        return next(new Error('This name Category Exist!'))
+
+export const addSubcategory = asyncHandler(async (req, res, next) => {
+    const { name, categoryId } = req.body
+    const isCategoryExist = await categoryModel.findById(categoryId)
+    if (!isCategoryExist) {
+        return next(new Error("Category is not Exist"))
+    }
+    const isNameExist = await subcategoryModel.findOne({ name })
+    if (isNameExist) {
+        return next(new Error("Subcategory already Exist"))
     }
     const slug = slugify(name)
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'category' })
-    const category = await categoryModel.create({ name, slug, image: { secure_url, public_id } })
-    return res.status(201).json({ message: "catgory Added Successfully✅", category })
+    //secure_url public_id
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'subcategory' })
+    await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
+    return res.status(201).json({ message: "Subcategory added successfully" })
 })
 
-export const getAllCategors = asyncHandler(async (req, res, next) => {
-    const categorys = await categoryModel.find()
-
-    return res.status(200).json({ message: "Done", categorys })
+//get all subcategory for spacific category
+export const getAllSubcategors = asyncHandler(async (req, res, next) => {
+    const subcategorys = await subcategoryModel.find().populate('categoryId')
+    return res.status(200).json({ message: "Done", subcategorys })
 })
 
-export const deleteCategory = asyncHandler(async (req, res, next) => {
+export const deleteSubCategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    const isExist = await categoryModel.findByIdAndDelete(id)
+    const isExist = await subcategoryModel.findByIdAndDelete(id)
 
     if (!isExist) {
-        return next(new Error('This Category Not Exist!'))
+        return next(new Error('This Subcategory Not Exist!'))
     }
     await cloudinary.uploader.destroy(isExist.image.public_id)
     return res.status(200).json({ message: "Deleted Successfuly" })
 })
 
-export const updateCategory = asyncHandler(async (req, res, next) => {
+export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     const category = await categoryModel.findById(id)
     if (!category) {

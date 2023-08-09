@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const subCategorySchema = Schema({
+const subcategorySchema = Schema({
     name: {
         type: String,
         unique: true,
@@ -14,16 +14,10 @@ const subCategorySchema = Schema({
         lowercase: true,
     },
     image: {
-        secure_url: {
-            type: String,
-            required: true
-        },
-        public_id: {
-            type: String,
-            required: true
-        }
+        secure_url: String,
+        public_id: String,
     },
-    category: {
+    categoryId: {
         type: Schema.Types.ObjectId,
         ref: 'Category',
         required: true, //{TODO}convert to true after creating 
@@ -39,6 +33,6 @@ const subCategorySchema = Schema({
 )
 
 
-const subCategoryModel = model('SubCategory', subCategorySchema)
+const subcategoryModel = model('SubCategory', subcategorySchema)
 
-export default subCategoryModel
+export default subcategoryModel

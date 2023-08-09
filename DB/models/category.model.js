@@ -23,10 +23,15 @@ const categorySchema = Schema({
     }
 },
     {
+        toJSON: { virtual: true },
         timestamps: true,
     }
 )
-
+categorySchema.virtual('Subcategorise', {
+    localFiled: '_id',
+    forignField: 'categoryId',
+    ref: 'Subcategory'
+})
 const categoryModel = model('Category', categorySchema)
 
 export default categoryModel
