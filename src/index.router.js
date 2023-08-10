@@ -2,6 +2,7 @@ import connectDB from "../DB/connection.js"
 import categoryRouter from "./modules/category/category.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
 import userRouter from "./modules/user/user.routes.js"
+import { golbalErrorHandling } from "./utils/errorHandling.js"
 
 
 
@@ -14,6 +15,8 @@ const initApp = (app, express) => {
     app.use('*', (req, res, next) => {
         res.json("In-valid Routing check url  or  method")
     })
+    app.use(golbalErrorHandling)
+
     connectDB()
 }
 export default initApp

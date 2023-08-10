@@ -7,10 +7,10 @@ export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
     const isExist = await categoryModel.findOne({ name: name })
     if (isExist) {
-        return next(new Error('This name Category Exist!'))
+        return next(new Error("This name Category Exist!"))
     }
     const slug = slugify(name)
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'category' })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: "category" })
     const category = await categoryModel.create({ name, slug, image: { secure_url, public_id } })
     return res.status(201).json({ message: "catgory Added Successfully✅", category })
 })
