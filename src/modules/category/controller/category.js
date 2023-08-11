@@ -2,12 +2,14 @@ import categoryModel from "../../../../DB/models/category.model.js";
 import cloudinary from "../../../utils/cloudinary.js";
 import slugify from 'slugify'
 import { asyncHandler } from "../../../utils/errorHandling.js";
+import { ErrorClass } from "../../../utils/errorClass.js";
+import { StatusCodes } from "http-status-codes";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
     const isExist = await categoryModel.findOne({ name: name })
     if (isExist) {
-        return next(new Error("This name Category Exist!"))
+        return next(new ErrorClass("This name Category Exist!", StatusCodes.CONFLICT))
     }
     const slug = slugify(name)
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: "category" })
@@ -28,7 +30,7 @@ export const deleteCategory = asyncHandler(async (req, res, next) => {
     const isExist = await categoryModel.findByIdAndDelete(id)
 
     if (!isExist) {
-        return next(new Error('This Category Not Exist!'))
+        return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
     }
     await cloudinary.uploader.destroy(isExist.image.public_id)
     return res.status(200).json({ message: "Deleted Successfuly" })
@@ -38,7 +40,7 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     const category = await categoryModel.findById(id)
     if (!category) {
-        return next(new Error('This Category Not Exist!'))
+        return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
     }
     if (req.body.name) {
         //this name is exist in other category?
@@ -47,7 +49,7 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
             _id: { $ne: id }
         })
         if (isNameExist) {
-            return next(new Error('This Category name already Exist!'))
+            return next(new ErrorClass('This Category name already Exist!', StatusCodes.CONFLICT))
         }
         //add slug to body
         req.body.slug = slugify(req.body.name)

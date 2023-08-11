@@ -7,7 +7,7 @@ export const asyncHandler = (fn) => {
 }
 
 export const golbalErrorHandling = (error, req, res, next) => {
-    return res.json({
+    return res.status(error.status || 400).json({
         message: 'G error',
         mesgError: error.message,
         stack: error.stack

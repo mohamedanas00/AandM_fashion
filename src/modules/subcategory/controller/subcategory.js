@@ -3,17 +3,18 @@ import categoryModel from "../../../../DB/models/category.model.js";
 import subcategoryModel from "../../../../DB/models/subcategory.model.js";
 import cloudinary from "../../../utils/cloudinary.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
-
+import { StatusCodes } from "http-status-codes";
+import { ErrorClass } from "../../../utils/errorClass.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
     const isCategoryExist = await categoryModel.findById(categoryId)
     if (!isCategoryExist) {
-        return next(new Error("Category is not Exist"))
+        return next(new ErrorClass("Category is not Exist", StatusCodes.NOT_FOUND))
     }
     const isNameExist = await subcategoryModel.findOne({ name })
     if (isNameExist) {
-        return next(new Error("Subcategory already Exist"))
+        return next(new ErrorClass("Subcategory already Exist", StatusCodes.CONFLICT))
     }
     const slug = slugify(name)
     //secure_url public_id
@@ -35,7 +36,7 @@ export const deleteSubCategory = asyncHandler(async (req, res, next) => {
     const isExist = await subcategoryModel.findByIdAndDelete(id)
 
     if (!isExist) {
-        return next(new Error('This Subcategory Not Exist!'))
+        return next(new ErrorClass('This Subcategory Not Exist!', StatusCodes.NOT_FOUND))
     }
     await cloudinary.uploader.destroy(isExist.image.public_id)
     return res.status(200).json({ message: "Deleted Successfuly" })
@@ -45,7 +46,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     const category = await categoryModel.findById(id)
     if (!category) {
-        return next(new Error('This Category Not Exist!'))
+        return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
     }
     if (req.body.name) {
         //this name is exist in other category?
@@ -54,7 +55,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
             _id: { $ne: id }
         })
         if (isNameExist) {
-            return next(new Error('This Category name already Exist!'))
+            return next(new ErrorClass('This Category name already Exist!', StatusCodes.CONFLICT))
         }
         //add slug to body
         req.body.slug = slugify(req.body.name)
