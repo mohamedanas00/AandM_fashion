@@ -4,7 +4,7 @@ import { asyncHandler } from "../../../utils/errorHandling.js"
 import cloudinary from "../../../utils/cloudinary.js"
 import subcategoryModel from "../../../../DB/models/subcategory.model.js"
 
-export const deleteModel = (model, modelName) => {
+export const deleteGlModel = (model, modelName) => {
     return asyncHandler(async (req, res, next) => {
         const { id } = req.params
         const isExist = await model.findByIdAndDelete(id)

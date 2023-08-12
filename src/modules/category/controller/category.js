@@ -4,7 +4,7 @@ import slugify from 'slugify'
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { StatusCodes } from "http-status-codes";
-import { deleteModel } from "../../global/handlers/delete.js";
+import { deleteGlModel } from "../../global/handlers/delete.js";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
@@ -13,7 +13,7 @@ export const addCategory = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass("This name Category Exist!", StatusCodes.CONFLICT))
     }
     const slug = slugify(name)
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: "category" })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `category/${slug}` })
     const category = await categoryModel.create({ name, slug, image: { secure_url, public_id } })
     return res.status(201).json({ message: "Done", category })
 })
@@ -26,7 +26,7 @@ export const getAllCategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", categorys })
 })
 
-export const deleteCategory = deleteModel(categoryModel, "category")
+export const deleteCategory = deleteGlModel(categoryModel, "category")
 
 
 export const updateCategory = asyncHandler(async (req, res, next) => {
@@ -53,7 +53,6 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
         //add image to body
         req.body.image = { secure_url, public_id }
     }
-    console.log(req.body);
     await categoryModel.updateOne({ _id: id }, req.body)
     return res.status(200).json({ message: "Done" })
 })

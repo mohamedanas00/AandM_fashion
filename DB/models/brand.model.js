@@ -12,15 +12,9 @@ const brandSchema = Schema({
         type: String,
         lowercase: true,
     },
-    logo: {
-        secure_url: {
-            type: String,
-            required: true
-        },
-        public_id: {
-            type: String,
-            required: true
-        }
+    image: {
+        secure_url: String,
+        public_id: String,
     },
     createdBy: {
         type: Schema.Types.ObjectId,

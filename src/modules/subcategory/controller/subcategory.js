@@ -5,7 +5,7 @@ import cloudinary from "../../../utils/cloudinary.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import { ErrorClass } from "../../../utils/errorClass.js";
-import { deleteModel } from "../../global/handlers/delete.js";
+import { deleteGlModel } from "../../global/handlers/delete.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
@@ -19,7 +19,7 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     }
     const slug = slugify(name)
     //secure_url public_id
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'subcategory' })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${name}` })
     await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
     return res.status(201).json({ message: "Done" })
 })
@@ -32,7 +32,7 @@ export const getAllSubcategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", subcategorys })
 })
 
-export const deleteSubCategory = deleteModel(subcategoryModel, "subcategory")
+export const deleteSubCategory = deleteGlModel(subcategoryModel, "subcategory")
 
 export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
@@ -54,7 +54,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
     }
     if (req.file) {
         await cloudinary.uploader.destroy(category.image.public_id)
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'category' })
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${slug}` })
         //add image to body
         req.body.image = { secure_url, public_id }
     }

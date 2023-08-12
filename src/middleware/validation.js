@@ -10,11 +10,10 @@ export const validation = (joiSchema) => {
                 const validationResult = joiSchema[ele].validate(req[ele], { abortEarly: false })
                 if (validationResult.error) {
                     validationErr.push(validationResult.error.details)
-                    console.log();
                 }
             }
         })
-        if (validationErr.length > 0) {
+        if (validationErr.length) {
             return res.json({ message: "Valdation Error", validationErr })
         }
         return next()
