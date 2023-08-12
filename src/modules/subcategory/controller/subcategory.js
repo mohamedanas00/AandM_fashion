@@ -11,7 +11,7 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
     const isCategoryExist = await categoryModel.findById(categoryId)
     if (!isCategoryExist) {
-        return next(new ErrorClass("Category is not Exist", StatusCodes.NOT_FOUND))
+        return next(new ErrorClass("CategoryId is not Exist", StatusCodes.NOT_FOUND))
     }
     const isNameExist = await subcategoryModel.findOne({ name })
     if (isNameExist) {
@@ -53,6 +53,12 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
         req.body.slug = slugify(req.body.name)
     }
     if (req.file) {
+        let slug;
+        if (req.body.slug) {
+            slug = req.body.slug
+        } else {
+            slug = isExist.slug
+        }
         await cloudinary.uploader.destroy(category.image.public_id)
         const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${slug}` })
         //add image to body

@@ -55,7 +55,7 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
             slug = isExist.slug
         }
         await cloudinary.uploader.destroy(isExist.image.public_id)
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `brand/${slug}` })
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Brand/${slug}` })
         req.body.image = { secure_url, public_id }
     }
     await brandModel.updateOne({ _id: id }, req.body)

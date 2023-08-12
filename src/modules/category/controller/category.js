@@ -10,7 +10,7 @@ export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
     const isExist = await categoryModel.findOne({ name: name })
     if (isExist) {
-        return next(new ErrorClass("This name Category Exist!", StatusCodes.CONFLICT))
+        return next(new ErrorClass("This Category Already Exist!", StatusCodes.CONFLICT))
     }
     const slug = slugify(name)
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `category/${slug}` })
@@ -48,8 +48,14 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
         req.body.slug = slugify(req.body.name)
     }
     if (req.file) {
+        let slug;
+        if (req.body.slug) {
+            slug = req.body.slug
+        } else {
+            slug = isExist.slug
+        }
         await cloudinary.uploader.destroy(category.image.public_id)
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'category' })
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `category/${slug}` })
         //add image to body
         req.body.image = { secure_url, public_id }
     }
