@@ -13,7 +13,7 @@ export const addSubcategory = {
 
 
 export const deleteSubCategory = {
-    body: joi.object({
+    params: joi.object({
         id: generalFields.id
     }).required(),
 }
