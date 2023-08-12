@@ -4,7 +4,7 @@ import slugify from 'slugify'
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { StatusCodes } from "http-status-codes";
-import { deleteModel } from "../../../utils/handlers/delete.js";
+import { deleteModel } from "../../global/handlers/delete.js";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
@@ -26,7 +26,7 @@ export const getAllCategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", categorys })
 })
 
-export const deleteCategory = deleteModel(categoryModel)
+export const deleteCategory = deleteModel(categoryModel, "category")
 
 
 export const updateCategory = asyncHandler(async (req, res, next) => {

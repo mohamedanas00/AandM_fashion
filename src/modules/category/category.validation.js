@@ -8,11 +8,6 @@ export const addCategory = {
     file: generalFields.file.required()
 }
 
-export const deleteCategory = {
-    params: joi.object({
-        id: generalFields.id
-    })
-}
 
 export const updateCategory = {
     params: joi.object({

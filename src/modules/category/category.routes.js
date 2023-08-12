@@ -3,6 +3,8 @@ import * as categoryController from './controller/category.js'
 import { fileUpload, fileValidation } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.js";
 import * as validator from './category.validation.js'
+import { idValidation } from "../global/globalValidation.js";
+
 const categoryRouter = Router()
 
 categoryRouter.route('/')
@@ -17,7 +19,7 @@ categoryRouter.route('/')
 
 
 categoryRouter.route('/:id')
-    .delete(validation(validator.deleteCategory), categoryController.deleteCategory)
+    .delete(validation(idValidation), categoryController.deleteCategory)
     .put(
         fileUpload(fileValidation.image).single('image'),
         validation(validator.updateCategory),

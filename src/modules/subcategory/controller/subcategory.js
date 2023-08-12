@@ -5,7 +5,7 @@ import cloudinary from "../../../utils/cloudinary.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import { ErrorClass } from "../../../utils/errorClass.js";
-import { deleteModel } from "../../../utils/handlers/delete.js";
+import { deleteModel } from "../../global/handlers/delete.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
@@ -32,7 +32,7 @@ export const getAllSubcategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", subcategorys })
 })
 
-export const deleteSubCategory = deleteModel(subcategoryModel)
+export const deleteSubCategory = deleteModel(subcategoryModel, "subcategory")
 
 export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
