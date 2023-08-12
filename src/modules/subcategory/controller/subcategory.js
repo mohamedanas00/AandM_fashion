@@ -21,7 +21,7 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     //secure_url public_id
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: 'subcategory' })
     await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
-    return res.status(201).json({ message: "Subcategory added successfully" })
+    return res.status(201).json({ message: "Done" })
 })
 
 //get all subcategory for spacific category
@@ -59,5 +59,5 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
         req.body.image = { secure_url, public_id }
     }
     await categoryModel.updateOne({ _id: id }, req.body)
-    return res.status(200).json({ message: "Update Successfully" })
+    return res.status(200).json({ message: "Done" })
 })
