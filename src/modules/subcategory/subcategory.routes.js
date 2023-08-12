@@ -10,8 +10,15 @@ subcategoryRouter.post('/', fileUpload(fileValidation.image).single('image'),
 
 subcategoryRouter.get('/', subcategoryController.getAllSubcategors)
 
-subcategoryRouter.delete('/:id', fileUpload(fileValidation.image).single('image'),
+subcategoryRouter.delete('/:id',
     validation(validator.deleteSubCategory),
-    subcategoryController.deleteSubCategory)
+    subcategoryController.deleteSubCategory
+)
+
+
+subcategoryRouter.put('/:id', fileUpload(fileValidation.image).single('image'),
+    validation(validator.updateSubcategory),
+    subcategoryController.updateSubcategory
+)
 
 export default subcategoryRouter

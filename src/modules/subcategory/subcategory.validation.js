@@ -17,3 +17,15 @@ export const deleteSubCategory = {
         id: generalFields.id
     }).required(),
 }
+
+export const updateSubcategory = {
+    params: joi.object({
+        id: generalFields.id
+    }),
+    body: joi.object({
+        name: generalFields.name.min(2),
+        categoryId: generalFields.id.required()
+    }).required(),
+
+    file: generalFields.file
+}

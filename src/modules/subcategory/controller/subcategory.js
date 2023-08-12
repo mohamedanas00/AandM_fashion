@@ -5,6 +5,7 @@ import cloudinary from "../../../utils/cloudinary.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import { ErrorClass } from "../../../utils/errorClass.js";
+import { deleteModel } from "../../../utils/handlers/delete.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
@@ -31,31 +32,22 @@ export const getAllSubcategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", subcategorys })
 })
 
-export const deleteSubCategory = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const isExist = await subcategoryModel.findByIdAndDelete(id)
-
-    if (!isExist) {
-        return next(new ErrorClass('This Subcategory Not Exist!', StatusCodes.NOT_FOUND))
-    }
-    await cloudinary.uploader.destroy(isExist.image.public_id)
-    return res.status(200).json({ message: "Deleted Successfuly" })
-})
+export const deleteSubCategory = deleteModel(subcategoryModel)
 
 export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    const category = await categoryModel.findById(id)
+    const category = await categoryModel.findById(req.body.categoryId)
     if (!category) {
         return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
     }
     if (req.body.name) {
         //this name is exist in other category?
-        const isNameExist = await categoryModel.findOne({
+        const isNameExist = await subcategoryModel.findOne({
             name: req.body.name,
             _id: { $ne: id }
         })
         if (isNameExist) {
-            return next(new ErrorClass('This Category name already Exist!', StatusCodes.CONFLICT))
+            return next(new ErrorClass('This Subcategory name already Exist!', StatusCodes.CONFLICT))
         }
         //add slug to body
         req.body.slug = slugify(req.body.name)
@@ -66,7 +58,6 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
         //add image to body
         req.body.image = { secure_url, public_id }
     }
-    console.log(req.body);
     await categoryModel.updateOne({ _id: id }, req.body)
     return res.status(200).json({ message: "Update Successfully" })
 })

@@ -1,4 +1,4 @@
-import { ErrorClass } from "./errorClass"
+import { ErrorClass } from "./errorClass.js"
 
 export const asyncHandler = (fn) => {
     return (req, res, next) => {

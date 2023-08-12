@@ -4,6 +4,7 @@ import slugify from 'slugify'
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { StatusCodes } from "http-status-codes";
+import { deleteModel } from "../../../utils/handlers/delete.js";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
@@ -25,16 +26,8 @@ export const getAllCategors = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", categorys })
 })
 
-export const deleteCategory = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const isExist = await categoryModel.findByIdAndDelete(id)
+export const deleteCategory = deleteModel(categoryModel)
 
-    if (!isExist) {
-        return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
-    }
-    await cloudinary.uploader.destroy(isExist.image.public_id)
-    return res.status(200).json({ message: "Deleted Successfuly" })
-})
 
 export const updateCategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
