@@ -4,7 +4,7 @@ import { validation } from "../../middleware/validation.js";
 import { fileUpload, fileValidation } from "../../utils/multer.js";
 import *as validator from './subcategory.validation.js'
 import { idValidation } from "../global/globalValidation.js";
-const subcategoryRouter = Router()
+const subcategoryRouter = Router({ mergeParams: true })
 
 
 

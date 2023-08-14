@@ -4,9 +4,12 @@ import { fileUpload, fileValidation } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.js";
 import * as validator from './category.validation.js'
 import { idValidation } from "../global/globalValidation.js";
+import subcategoryRouter from "../subcategory/subcategory.routes.js";
 
 const categoryRouter = Router()
 
+
+categoryRouter.use('/:categoryId/subcategory/', subcategoryRouter)
 categoryRouter.route('/')
     .post(
         fileUpload(fileValidation.image).single('image'),

@@ -26,7 +26,8 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
 
 //get all subcategory for spacific category
 export const getAllSubcategors = asyncHandler(async (req, res, next) => {
-    const subcategorys = await subcategoryModel.find().populate([{
+    
+    const subcategorys = await subcategoryModel.find(req.params).populate([{
         path: 'categoryId'
     }])
     return res.status(200).json({ message: "Done", subcategorys })
