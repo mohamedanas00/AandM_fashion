@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const productSchema = Schema({
-    title: {
+    name: {
         type: String,
         unique: true,
         lowercase: true,
@@ -18,7 +18,12 @@ const productSchema = Schema({
         default: 0,
         min: 0,
     },
-    priceAfterDiscound: {
+    discount: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
+    payementPrice: {
         type: Number,
         default: 0,
         min: 0,
@@ -27,7 +32,7 @@ const productSchema = Schema({
         type: String,
         required: true,
         minlength: [10, 'too short description name '],
-        maxlength: [100, 'too long description name,description should be less than 100'],
+        maxlength: [300, 'too long description name,description should be less than 100'],
         trim: true//delte space from first and end
     },
     stock: {
@@ -35,13 +40,23 @@ const productSchema = Schema({
         default: 0,
         min: 0,
     },
-    soldItem: {
+    sold: {
         type: Number,
         default: 0,
         min: 0,
     },
-    imageCover: {
-        type: String, //{TOD}🚩
+    image: {
+        type: Object,
+        required: true
+    },
+    coverImages: {
+        type: Array
+    },
+    colors: {
+        type: Array
+    },
+    sizes: {
+        type: Array
     },
     ratingAvg: {
         type: Number,
@@ -52,24 +67,24 @@ const productSchema = Schema({
         type: Number,
         min: 0
     },
-    category: {
+    categoryId: {
         type: Schema.Types.ObjectId,
         ref: "Category",
         required: true,
     },
-    subCategory: {
+    subcategoryId: {
         type: Schema.Types.ObjectId,
         ref: "SubCategory",
         required: true,
     },
-    brand: {
+    brandId: {
         type: Schema.Types.ObjectId,
         ref: "Brand",
         required: true,
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        required: false, //{TODO}convert to true after creating 
+        required: false, //🚩{TODO}convert to true after creating 
     }
 },
     {
