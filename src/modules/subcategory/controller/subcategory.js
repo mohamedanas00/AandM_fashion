@@ -18,7 +18,7 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     if (isNameExist) {
         return next(new ErrorClass("Subcategory already Exist", StatusCodes.CONFLICT))
     }
-    const slug = slugify(name)
+    const slug = slugify(name.toLowerCase())
     //secure_url public_id
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${name}` })
     await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
@@ -53,7 +53,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
             return next(new ErrorClass('This Subcategory name already Exist!', StatusCodes.CONFLICT))
         }
         //add slug to body
-        req.body.slug = slugify(req.body.name)
+        req.body.slug = slugify(req.body.name.toLowerCase())
     }
     if (req.file) {
         let slug;
@@ -67,6 +67,6 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
         //add image to body
         req.body.image = { secure_url, public_id }
     }
-    await categoryModel.updateOne({ _id: id }, req.body)
+    await subcategoryModel.updateOne({ _id: id }, req.body)
     return res.status(200).json({ message: "Done" })
 })

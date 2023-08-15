@@ -8,6 +8,7 @@ import slugify from "slugify";
 import cloudinary from "../../../utils/cloudinary.js";
 import brandModel from "../../../../DB/models/brand.model.js";
 import { ApiFeatures } from "../../../utils/apiFeatures.js";
+import { deleteGlModel } from "../../global/handlers/delete.js";
 
 
 export const addProduct = asyncHandler(async (req, res, next) => {
@@ -62,4 +63,29 @@ export const getAllProducts = asyncHandler(async (req, res, next) => {
     let products = await apiFeatures.mongooseQuery
     res.status(StatusCodes.OK).json({ page: apiFeatures.page, products })
 })
-//.pagination().search().sort().filter()
+
+export const deleteProducts = deleteGlModel(productModel, "product")
+
+
+export const updateProducts = asyncHandler(async (req, res, next) => {
+    const { id } = req.params
+    if (req.body.name) {
+        const isNameExist = await productModel.findOne({
+            name: req.body.name,
+            _id: { $ne: id }
+        })
+        if (isNameExist) {
+            return next(new ErrorClass('This Product name already Exist!', StatusCodes.NOT_FOUND))
+        }
+        req.body.slug = slugify(req.body.name.toLowerCase())
+    }
+    if (req.files) {
+        let slug;
+        if (req.body.slug) {
+            slug = req.body.slug
+        } else {
+            slug = isExist.slug
+        }
+
+    }
+})

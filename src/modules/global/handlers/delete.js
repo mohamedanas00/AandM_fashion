@@ -3,6 +3,7 @@ import { ErrorClass } from "../../../utils/errorClass.js"
 import { asyncHandler } from "../../../utils/errorHandling.js"
 import cloudinary from "../../../utils/cloudinary.js"
 import subcategoryModel from "../../../../DB/models/subcategory.model.js"
+import productModel from "../../../../DB/models/product.model.js"
 
 export const deleteGlModel = (model, modelName) => {
     return asyncHandler(async (req, res, next) => {
@@ -13,6 +14,10 @@ export const deleteGlModel = (model, modelName) => {
         }
         if (modelName == "category") {
             await subcategoryModel.deleteMany({ categoryId: id })
+            await productModel.deleteMany({ categoryId: id })
+        }
+        if (modelName == "subcategory") {
+            await productModel.deleteMany({ categoryId: id })
         }
         await cloudinary.uploader.destroy(isExist.image.public_id)
         return res.status(200).json({ message: "Done" })
