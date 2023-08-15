@@ -5,6 +5,7 @@ import { asyncHandler } from "../../../utils/errorHandling.js";
 import slugify from "slugify";
 import cloudinary from "../../../utils/cloudinary.js";
 import { deleteGlModel } from "../../global/handlers/delete.js";
+import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 
 export const addBrand = asyncHandler(async (req, res, next) => {
@@ -22,8 +23,9 @@ export const addBrand = asyncHandler(async (req, res, next) => {
 
 
 export const getAllBrands = asyncHandler(async (req, res, next) => {
-    const brands = await brandModel.find()
-    return res.status(StatusCodes.OK).json({ message: "Done", brands })
+    let apiFeatures = new ApiFeatures(brandModel.find(), req.query).fields().pagination().search().sort().filter()
+    let brands = await apiFeatures.mongooseQuery
+    res.status(StatusCodes.OK).json({ page: apiFeatures.page, brands })
 })
 
 

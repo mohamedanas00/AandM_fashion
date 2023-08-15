@@ -7,6 +7,7 @@ import subcategoryModel from "../../../../DB/models/subcategory.model.js";
 import slugify from "slugify";
 import cloudinary from "../../../utils/cloudinary.js";
 import brandModel from "../../../../DB/models/brand.model.js";
+import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 
 export const addProduct = asyncHandler(async (req, res, next) => {
@@ -55,3 +56,10 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     const product = await productModel.create(req.body)
     res.status(StatusCodes.CREATED).json({ message: "Done", product })
 })
+
+export const getAllProducts = asyncHandler(async (req, res, next) => {
+    let apiFeatures = new ApiFeatures(productModel.find(), req.query).fields().pagination().search().sort().filter()
+    let products = await apiFeatures.mongooseQuery
+    res.status(StatusCodes.OK).json({ page: apiFeatures.page, products })
+})
+//.pagination().search().sort().filter()

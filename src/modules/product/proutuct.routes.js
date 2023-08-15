@@ -8,6 +8,7 @@ productRouter.route('/')
         { name: 'image', maxCount: 1 },
         { name: 'coverImages', maxCount: 5 }
     ]), productController.addProduct)
+    .get(productController.getAllProducts)
 
 
 export default productRouter

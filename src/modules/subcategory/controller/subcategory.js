@@ -6,6 +6,7 @@ import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { deleteGlModel } from "../../global/handlers/delete.js";
+import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
@@ -26,11 +27,12 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
 
 //get all subcategory for spacific category
 export const getAllSubcategors = asyncHandler(async (req, res, next) => {
-    
-    const subcategorys = await subcategoryModel.find(req.params).populate([{
+    let apiFeatures = new ApiFeatures(subcategoryModel.find(), req.query).fields().pagination().search().sort().filter()
+    let subcategorys = await apiFeatures.mongooseQuery.populate([{
         path: 'categoryId'
     }])
-    return res.status(200).json({ message: "Done", subcategorys })
+    res.status(StatusCodes.OK).json({ page: apiFeatures.page, subcategorys })
+
 })
 
 export const deleteSubCategory = deleteGlModel(subcategoryModel, "subcategory")

@@ -5,6 +5,7 @@ import { asyncHandler } from "../../../utils/errorHandling.js";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { StatusCodes } from "http-status-codes";
 import { deleteGlModel } from "../../global/handlers/delete.js";
+import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
@@ -19,11 +20,13 @@ export const addCategory = asyncHandler(async (req, res, next) => {
 })
 
 export const getAllCategors = asyncHandler(async (req, res, next) => {
-    const categorys = await categoryModel.find().populate([{
-        path: 'Subcategorise'
-    }])
 
-    return res.status(200).json({ message: "Done", categorys })
+    let apiFeatures = new ApiFeatures(categoryModel.find(), req.query).fields().pagination().search().sort().filter()
+    let categorys = await apiFeatures.mongooseQuery
+        .populate([{
+            path: 'Subcategorise'
+        }])
+    res.status(StatusCodes.OK).json({ page: apiFeatures.page, categorys })
 })
 
 export const deleteCategory = deleteGlModel(categoryModel, "category")
