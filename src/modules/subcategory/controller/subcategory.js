@@ -39,8 +39,8 @@ export const deleteSubCategory = deleteGlModel(subcategoryModel, "subcategory")
 
 export const updateSubcategory = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    const category = await categoryModel.findById(req.body.categoryId)
-    if (!category) {
+    const isExist = await categoryModel.findById(req.body.categoryId)
+    if (!isExist) {
         return next(new ErrorClass('This Category Not Exist!', StatusCodes.NOT_FOUND))
     }
     if (req.body.name) {
@@ -62,7 +62,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
         } else {
             slug = isExist.slug
         }
-        await cloudinary.uploader.destroy(category.image.public_id)
+        await cloudinary.uploader.destroy(isExist.image.public_id)
         const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/subcategory/${slug}` })
         //add image to body
         req.body.image = { secure_url, public_id }
