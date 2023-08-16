@@ -9,7 +9,7 @@ import cloudinary from "../../../utils/cloudinary.js";
 import brandModel from "../../../../DB/models/brand.model.js";
 import { ApiFeatures } from "../../../utils/apiFeatures.js";
 import { deleteGlModel } from "../../global/handlers/delete.js";
-
+import QRCode from "qrcode";
 
 export const addProduct = asyncHandler(async (req, res, next) => {
 
@@ -54,6 +54,15 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     if (req.body.colors) {
         req.body.colors = JSON.parse(req.body.colors)
     }
+    req.body.QRcode = await QRCode.toDataURL(JSON.stringify({
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        discount: req.body.discount,
+        payementPrice: req.body.payementPrice,
+        image: req.body.image.secure_url
+
+    }))
     const product = await productModel.create(req.body)
     res.status(StatusCodes.CREATED).json({ message: "Done", product })
 })
