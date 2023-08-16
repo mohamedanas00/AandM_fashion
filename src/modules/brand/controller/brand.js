@@ -16,7 +16,7 @@ export const addBrand = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass("This brand Already Exist", StatusCodes.CONFLICT))
     }
     const slug = slugify(name)
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Brand/${slug}` })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/Brand/${slug}` })
     const brand = await brandModel.create({ name, slug, image: { secure_url, public_id } })
     return res.status(StatusCodes.CREATED).json({ message: "Done", brand })
 })
@@ -57,7 +57,7 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
             slug = isExist.slug
         }
         await cloudinary.uploader.destroy(isExist.image.public_id)
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `Brand/${slug}` })
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/Brand/${slug}` })
         req.body.image = { secure_url, public_id }
     }
     await brandModel.updateOne({ _id: id }, req.body)

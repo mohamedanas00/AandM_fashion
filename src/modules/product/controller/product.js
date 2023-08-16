@@ -38,12 +38,12 @@ export const addProduct = asyncHandler(async (req, res, next) => {
 
     req.body.payementPrice = req.body.price - (req.body.price * ((req.body.discount || 0) / 100))
 
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.image[0].path, { folder: `product/${req.body.slug}/image` })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.image[0].path, { folder: `E-commerce/product/${req.body.slug}/image` })
     req.body.image = { secure_url, public_id }
     if (req.files.coverImages.length) {
         const coverImages = []
         for (let i = 0; i < req.files.coverImages.length; i++) {
-            let { secure_url, public_id } = await cloudinary.uploader.upload(req.files.coverImages[i].path, { folder: `product/${req.body.slug}/coverImages` })
+            let { secure_url, public_id } = await cloudinary.uploader.upload(req.files.coverImages[i].path, { folder: `E-commerce/product/${req.body.slug}/coverImages` })
             coverImages.push({ secure_url, public_id })
         }
         req.body.coverImages = coverImages

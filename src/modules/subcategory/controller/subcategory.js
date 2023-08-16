@@ -20,7 +20,7 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     }
     const slug = slugify(name.toLowerCase())
     //secure_url public_id
-    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${name}` })
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/subcategory/${name}` })
     await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
     return res.status(201).json({ message: "Done" })
 })
@@ -63,7 +63,7 @@ export const updateSubcategory = asyncHandler(async (req, res, next) => {
             slug = isExist.slug
         }
         await cloudinary.uploader.destroy(category.image.public_id)
-        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `subcategory/${slug}` })
+        const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/subcategory/${slug}` })
         //add image to body
         req.body.image = { secure_url, public_id }
     }
