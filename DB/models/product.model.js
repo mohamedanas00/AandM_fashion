@@ -6,7 +6,7 @@ const productSchema = Schema({
         unique: true,
         lowercase: true,
         required: true,
-        minlength: [10, 'too short category name'],
+        minlength: [3, 'too short category name'],
         trim: true//delte space from first and end
     },
     slug: {

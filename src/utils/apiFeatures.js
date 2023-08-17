@@ -4,7 +4,7 @@ export class ApiFeatures {
         this.mongooseQuery = mongooseQuery;
         this.queryString = queryString
     }
-    pagination() {
+    pagination(model) {
         //1-pagination
         //if send any thing other numer will be NaN || 1 =1
         let pageNumber = this.queryString.page * 1 || 1
@@ -13,7 +13,21 @@ export class ApiFeatures {
         let limit = process.env.page_limit
         let skip = (pageNumber - 1) * limit
         this.page = pageNumber
-        this.mongooseQuery.skip(skip).limit(5)
+        this.mongooseQuery.skip(skip).limit(limit)
+        model.countDocuments().then((value) => {
+            this.totalPages = Math.ceil(value / limit)
+            this.countDocuments = value
+            console.log(this.totalPages);
+            console.log(this.page);
+            if (this.totalPages > this.page) {
+                console.log("SDSADSDASD");
+                this.next = this.page + 1
+            }
+            if (this.page > 1) {
+                this.previous = this.page - 1
+            }
+            
+        })
         return this
     }
 

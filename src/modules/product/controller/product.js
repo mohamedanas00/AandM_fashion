@@ -68,9 +68,16 @@ export const addProduct = asyncHandler(async (req, res, next) => {
 })
 
 export const getAllProducts = asyncHandler(async (req, res, next) => {
-    let apiFeatures = new ApiFeatures(productModel.find(), req.query).fields().pagination().search().sort().filter()
+    let apiFeatures = new ApiFeatures(productModel.find(), req.query).fields().pagination(productModel).search().sort().filter()
     let products = await apiFeatures.mongooseQuery
-    res.status(StatusCodes.OK).json({ page: apiFeatures.page, products })
+    res.status(StatusCodes.OK).json({
+        Current_Page: apiFeatures.page,
+        Next_Page: apiFeatures.next,
+        Previous_Page: apiFeatures.previous,
+        Total_Pages: apiFeatures.totalPages,
+        Products_Count: apiFeatures.countDocuments,
+        products
+    })
 })
 
 export const deleteProducts = deleteGlModel(productModel, "product")

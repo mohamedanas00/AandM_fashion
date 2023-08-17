@@ -21,12 +21,20 @@ export const addCategory = asyncHandler(async (req, res, next) => {
 
 export const getAllCategors = asyncHandler(async (req, res, next) => {
 
-    let apiFeatures = new ApiFeatures(categoryModel.find(), req.query).fields().pagination().search().sort().filter()
+    let apiFeatures = new ApiFeatures(categoryModel.find(), req.query).fields().pagination(categoryModel).search().sort().filter()
     let categorys = await apiFeatures.mongooseQuery
         .populate([{
             path: 'Subcategorise'
         }])
-    res.status(StatusCodes.OK).json({ page: apiFeatures.page, categorys })
+    res.status(StatusCodes.OK).json({
+        Current_Page: apiFeatures.page,
+        Next_Page: apiFeatures.next,
+        Previous_Page: apiFeatures.previous,
+        Total_Pages: apiFeatures.totalPages,
+        categorys_Count: apiFeatures.countDocuments,
+        categorys
+
+    })
 })
 
 export const deleteCategory = deleteGlModel(categoryModel, "category")

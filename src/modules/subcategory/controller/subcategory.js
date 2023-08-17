@@ -27,11 +27,18 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
 
 //get all subcategory for spacific category
 export const getAllSubcategors = asyncHandler(async (req, res, next) => {
-    let apiFeatures = new ApiFeatures(subcategoryModel.find(), req.query).fields().pagination().search().sort().filter()
+    let apiFeatures = new ApiFeatures(subcategoryModel.find(), req.query).fields().pagination(subcategoryModel).search().sort().filter()
     let subcategorys = await apiFeatures.mongooseQuery.populate([{
         path: 'categoryId'
     }])
-    res.status(StatusCodes.OK).json({ page: apiFeatures.page, subcategorys })
+    res.status(StatusCodes.OK).json({
+        Current_Page: apiFeatures.page,
+        Next_Page: apiFeatures.next,
+        Previous_Page: apiFeatures.previous,
+        Total_Pages: apiFeatures.totalPages,
+        subcategorys_Count: apiFeatures.countDocuments,
+        subcategorys
+    })
 
 })
 
