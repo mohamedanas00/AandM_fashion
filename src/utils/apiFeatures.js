@@ -17,10 +17,7 @@ export class ApiFeatures {
         model.countDocuments().then((value) => {
             this.totalPages = Math.ceil(value / limit)
             this.countDocuments = value
-            console.log(this.totalPages);
-            console.log(this.page);
             if (this.totalPages > this.page) {
-                console.log("SDSADSDASD");
                 this.next = this.page + 1
             }
             if (this.page > 1) {
@@ -59,7 +56,6 @@ export class ApiFeatures {
 
         //search
         if (this.queryString.keyword) {
-            console.log(this.queryString.keyword);
             this.mongooseQuery.find({
                 $or: [
                     { name: { $regex: this.queryString.keyword, $options: 'i' } },

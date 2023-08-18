@@ -10,6 +10,7 @@ import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addBrand = asyncHandler(async (req, res, next) => {
     const { name } = req.body
+    const userId = req.user._id
     const isExist = await brandModel.findOne({ name })
 
     if (isExist) {
@@ -17,7 +18,12 @@ export const addBrand = asyncHandler(async (req, res, next) => {
     }
     const slug = slugify(name)
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/Brand/${slug}` })
-    const brand = await brandModel.create({ name, slug, image: { secure_url, public_id } })
+    const brand = await brandModel.create({
+        name,
+        slug,
+        createdBy: userId,
+        image: { secure_url, public_id }
+    })
     return res.status(StatusCodes.CREATED).json({ message: "Done", brand })
 })
 
@@ -31,7 +37,6 @@ export const getAllBrands = asyncHandler(async (req, res, next) => {
         Previous_Page: apiFeatures.previous,
         Total_Pages: apiFeatures.totalPages,
         Brands_Count: apiFeatures.countDocuments,
-
         brands
     })
 })

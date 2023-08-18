@@ -4,25 +4,33 @@ import { validation } from "../../middleware/validation.js";
 import * as brandController from './controller/brand.js'
 import * as validator from './brand.validation.js'
 import { idValidation } from "../global/globalValidation.js";
+import auth, { roles } from "../../middleware/auth.js";
+import { userAuth } from "./brand.endPoint.js";
 const brandRouter = Router()
 
 
 brandRouter.route('/')
-    .post(fileUpload(fileValidation.image).single('image'),
+    .post(
+        auth(userAuth.Roles),
+        fileUpload(fileValidation.image).single('image'),
         validation(validator.addBrand),
         brandController.addBrand
     )
-    .get(brandController.getAllBrands)
+    .get(
+        auth(userAuth.Roles),
+        brandController.getAllBrands)
 
 brandRouter.route('/:id')
-    .delete(validation(idValidation),
+    .delete(
+        auth(userAuth.Roles),
+        validation(idValidation),
         brandController.deleteBrand
     )
     .put(
+        auth(userAuth.Roles),
         fileUpload(fileValidation.image).single('image'),
         validation(validator.updateBrand),
         brandController.updateBrand
-
     )
 
 

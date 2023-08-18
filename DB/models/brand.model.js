@@ -18,7 +18,8 @@ const brandSchema = Schema({
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        required: false, //🚩{TODO}convert to true after creating 
+        ref: 'User',
+        required: true,
     }
 },
     {
