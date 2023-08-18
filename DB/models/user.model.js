@@ -18,14 +18,27 @@ const userSchema = Schema({
         type: String,
         required: true,
     },
+    phone: {
+        type: String,
+        required: true,
+    },
+    birthday: {
+        type: Date
+    },
     role: {
         type: String,
+        default: 'user',
         enum: ['admin', 'user']
     },
-    isActive: {
-        type: Boolean,
-        default: false
+    confirmCode: {
+        type: String,
+        minlength: 6,
+        maxlength: 6
     },
+    // isActive: {
+    //     type: Boolean,
+    //     default: false
+    // },
     confirmEmail: {
         type: Boolean,
         default: false
