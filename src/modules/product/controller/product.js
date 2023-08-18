@@ -12,7 +12,7 @@ import { deleteGlModel } from "../../global/handlers/delete.js";
 import QRCode from "qrcode";
 
 export const addProduct = asyncHandler(async (req, res, next) => {
-
+    req.body.createdBy = req.user._id
     const isNameExist = await productModel.findOne({ name: req.body.name })
     if (isNameExist) {
         isNameExist.stock += Number(req.body.quantity)
@@ -20,6 +20,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
 
         return res.status(StatusCodes.ACCEPTED).json({ message: "Done", product: isNameExist })
     }
+    console.log(req.body.categoryId);
     const isCategoryExist = await categoryModel.findById(req.body.categoryId)
     const isSubcategoryExist = await subcategoryModel.findById(req.body.subcategoryId)
     const isBrandExist = await brandModel.findById(req.body.brandId)

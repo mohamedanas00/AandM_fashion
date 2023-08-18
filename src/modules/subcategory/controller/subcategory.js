@@ -10,6 +10,7 @@ import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addSubcategory = asyncHandler(async (req, res, next) => {
     const { name, categoryId } = req.body
+    const adminId = req.user._id
     const isCategoryExist = await categoryModel.findById(categoryId)
     if (!isCategoryExist) {
         return next(new ErrorClass("CategoryId is not Exist", StatusCodes.NOT_FOUND))
@@ -21,7 +22,13 @@ export const addSubcategory = asyncHandler(async (req, res, next) => {
     const slug = slugify(name.toLowerCase())
     //secure_url public_id
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, { folder: `E-commerce/subcategory/${name}` })
-    await subcategoryModel.create({ name, categoryId, slug, image: { secure_url, public_id } })
+    await subcategoryModel.create({
+        name,
+        categoryId,
+        slug,
+        createdBy: adminId,
+        image: { secure_url, public_id }
+    })
     return res.status(201).json({ message: "Done" })
 })
 

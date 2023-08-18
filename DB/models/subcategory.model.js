@@ -20,11 +20,12 @@ const subcategorySchema = Schema({
     categoryId: {
         type: Schema.Types.ObjectId,
         ref: 'Category',
-        required: true, //{TODO}convert to true after creating 
+        required: true,
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        required: false, //{TODO}convert to true after creating 
+        ref: 'User',
+        required: true,
     }
 },
     {

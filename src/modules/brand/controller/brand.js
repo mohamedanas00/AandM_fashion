@@ -10,7 +10,7 @@ import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addBrand = asyncHandler(async (req, res, next) => {
     const { name } = req.body
-    const userId = req.user._id
+    const adminId = req.user._id
     const isExist = await brandModel.findOne({ name })
 
     if (isExist) {
@@ -21,7 +21,7 @@ export const addBrand = asyncHandler(async (req, res, next) => {
     const brand = await brandModel.create({
         name,
         slug,
-        createdBy: userId,
+        createdBy: adminId,
         image: { secure_url, public_id }
     })
     return res.status(StatusCodes.CREATED).json({ message: "Done", brand })

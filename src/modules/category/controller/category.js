@@ -9,7 +9,7 @@ import { ApiFeatures } from "../../../utils/apiFeatures.js";
 
 export const addCategory = asyncHandler(async (req, res, next) => {
     let { name } = req.body
-    const userId = req.user._id
+    const adminId = req.user._id
     const isExist = await categoryModel.findOne({ name: name })
     if (isExist) {
         return next(new ErrorClass("This Category Already Exist!", StatusCodes.CONFLICT))
@@ -19,7 +19,7 @@ export const addCategory = asyncHandler(async (req, res, next) => {
     const category = await categoryModel.create({
         name,
         slug,
-        createdBy: userId,
+        createdBy: adminId,
         image: { secure_url, public_id }
     })
     return res.status(201).json({ message: "Done", category })
