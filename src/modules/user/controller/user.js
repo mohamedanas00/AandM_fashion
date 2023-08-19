@@ -13,6 +13,9 @@ export const signUp = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass(`This email:"${req.body.email}" Already Exist!`, StatusCodes.CONFLICT))
     }
     req.body.phone = CryptoJS.AES.encrypt(req.body.phone, process.env.encrypt_key).toString()
+    if (req.body.password != req.body.cPassword) {
+        return next(new ErrorClass(`Please check your cPassword`, StatusCodes.CONFLICT))
+    }
     req.body.password = hash(req.body.password)
     const code = nanoid(6)
     req.body.confirmCode = code

@@ -1,6 +1,6 @@
-import { roles } from "../../middleware/auth";
+import { roles } from "../../middleware/auth.js";
 
 
-const userAuth = {
+export const userAuth = {
     Roles: [roles.admin]
 }

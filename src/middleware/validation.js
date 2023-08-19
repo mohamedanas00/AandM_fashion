@@ -34,7 +34,7 @@ export const generalFields = {
         tlds: { allow: ['com', 'net'] }
     }).required(),
     password: joi.string(),
-    cPassword: joi.string().required(),
+    cPassword: joi.string(),
     id: joi.string().custom(validateObjectId).required(),
     name: joi.string(),
     file: joi.object({

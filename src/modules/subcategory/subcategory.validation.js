@@ -7,7 +7,6 @@ export const addSubcategory = {
         name: generalFields.name.min(2).max(30).required(),
         categoryId: generalFields.id
     }).required(),
-
     file: generalFields.file
 }
 

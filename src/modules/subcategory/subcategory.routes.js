@@ -5,7 +5,7 @@ import { fileUpload, fileValidation } from "../../utils/multer.js";
 import *as validator from './subcategory.validation.js'
 import { idValidation } from "../global/globalValidation.js";
 import auth from "../../middleware/auth.js";
-import { userAuth } from "../brand/brand.endPoint.js";
+import { userAuth } from "./subcategory.endpoint.js";
 const subcategoryRouter = Router({ mergeParams: true })
 
 
@@ -30,6 +30,7 @@ subcategoryRouter.route('/:id')
     )
     .put(
         auth(userAuth.Roles),
+
         fileUpload(fileValidation.image).single('image'),
         validation(validator.updateSubcategory),
         subcategoryController.updateSubcategory
