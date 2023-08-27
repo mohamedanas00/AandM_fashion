@@ -1,9 +1,9 @@
 import connectDB from "../DB/connection.js"
+import authRouter from "./modules/auth/auth.routes.js"
 import brandRouter from "./modules/brand/brand.routes.js"
 import categoryRouter from "./modules/category/category.routes.js"
 import productRouter from "./modules/product/proutuct.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
-import userRouter from "./modules/user/user.routes.js"
 import { golbalErrorHandling } from "./utils/errorHandling.js"
 
 
@@ -11,7 +11,7 @@ import { golbalErrorHandling } from "./utils/errorHandling.js"
 const initApp = (app, express) => {
     //convert Buffer Data
     app.use(express.json())
-    app.use('/user', userRouter)
+    app.use('/auth', authRouter)
     app.use('/category', categoryRouter)
     app.use('/subcategory', subcategoryRouter)
     app.use('/brand', brandRouter)
