@@ -1,6 +1,7 @@
 import connectDB from "../DB/connection.js"
 import authRouter from "./modules/auth/auth.routes.js"
 import brandRouter from "./modules/brand/brand.routes.js"
+import cartRouter from "./modules/cart/cart.routes.js"
 import categoryRouter from "./modules/category/category.routes.js"
 import productRouter from "./modules/product/proutuct.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
@@ -12,6 +13,7 @@ const initApp = (app, express) => {
     //convert Buffer Data
     app.use(express.json())
     app.use('/auth', authRouter)
+    app.use('/cart', cartRouter)
     app.use('/category', categoryRouter)
     app.use('/subcategory', subcategoryRouter)
     app.use('/brand', brandRouter)

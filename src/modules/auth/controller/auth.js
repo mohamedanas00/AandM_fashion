@@ -7,6 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import { sendEmail, emailHtml } from "../../../utils/email.js";
 import { nanoid } from "nanoid";
 import { generateToken } from "../../../utils/generateAndVerifyToken.js";
+import cartModel from "../../../../DB/models/cart.model.js";
 export const signUp = asyncHandler(async (req, res, next) => {
     const isEmailExist = await userModel.findOne({ email: req.body.email })
     if (isEmailExist) {
@@ -22,6 +23,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
     const html = emailHtml(code)
     sendEmail({ to: req.body.email, subject: "Confirm Email", html })
     const user = await userModel.create(req.body)
+    await cartModel.create({ userId: user._id })
     return res.status(StatusCodes.CREATED).json({ message: "Done", user })
 })
 

@@ -90,7 +90,11 @@ const productSchema = Schema({
     QRcode: {
         type: String,
         required: true
-    }
+    },
+    wishList: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }]
 },
     {
         timestamps: true,
