@@ -3,6 +3,7 @@ import authRouter from "./modules/auth/auth.routes.js"
 import brandRouter from "./modules/brand/brand.routes.js"
 import cartRouter from "./modules/cart/cart.routes.js"
 import categoryRouter from "./modules/category/category.routes.js"
+import couponRouter from "./modules/coupon/coupon.routes.js"
 import productRouter from "./modules/product/proutuct.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
 import { golbalErrorHandling } from "./utils/errorHandling.js"
@@ -18,7 +19,7 @@ const initApp = (app, express) => {
     app.use('/subcategory', subcategoryRouter)
     app.use('/brand', brandRouter)
     app.use('/product', productRouter)
-
+    app.use('/coupon', couponRouter)
     app.use('*', (req, res, next) => {
         res.json("In-valid Routing check url  or  method")
     })

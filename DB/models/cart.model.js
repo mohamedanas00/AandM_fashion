@@ -22,7 +22,11 @@ const cartSchema = Schema({
         }
     ]
 
-})
+},
+    {
+        timestamps: true,
+    }
+)
 
 
 
