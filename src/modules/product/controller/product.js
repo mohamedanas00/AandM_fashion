@@ -83,7 +83,7 @@ export const getAllProducts = asyncHandler(async (req, res, next) => {
 
 export const deleteProducts = deleteGlModel(productModel, "product")
 
-
+//////🚩🚩🚩🚩🚩-----🚩🚩🚩🚩🚩🚩🚩
 export const updateProducts = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     if (req.body.name) {

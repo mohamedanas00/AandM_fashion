@@ -3,6 +3,7 @@ import productModel from "../../../../DB/models/product.model.js";
 import { ErrorClass } from "../../../utils/errorClass.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import cartModel from "../../../../DB/models/cart.model.js";
+import { populate } from "dotenv";
 
 
 
@@ -63,13 +64,33 @@ export const deleteFromeCart = asyncHandler(async (req, res, next) => {
     userCart.save()
     return res.status(StatusCodes.OK).json({ message: "Done", userCart })
 })
-///
-export const getUserCart = asyncHandler(async (req, res, next) => {
+
+export const getUserCart = asyncHandler(async (req, res, next) => { 
+
+
     const userCart = await cartModel.findOne({ userId: req.user._id })
         .populate([{
             path: 'products.productId',
-            select: 'name price payementPrice description image'
+            select: 'name price payementPrice description image',
+            populate: [
+                {
+                    path: 'categoryId',
+                    select: 'name -_id'
+                },
+                {
+                    path: 'subcategoryId',
+                    select: 'name -_id'
+                }
+            ]
         }])
+    let totalPrice = 0
 
-    return res.status(StatusCodes.OK).json({ message: 'Done', userCart })
+    userCart.products.filter(element => {
+        if (element?.productId) {
+            totalPrice += (element.productId.payementPrice * element.quantity)
+            return element
+        }
+    })
+    await userCart.save()
+    return res.status(StatusCodes.OK).json({ message: 'Done', userCart, totalPayment: totalPrice })
 })

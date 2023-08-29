@@ -3,5 +3,7 @@ import { roles } from "../../middleware/auth.js";
 
 
 export const userAuth = {
-    Roles: [roles.admin]
+    Roles: [roles.admin],
+    getRoles: [roles.admin, roles.user]
 }
+

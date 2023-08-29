@@ -15,7 +15,7 @@ productRouter.route('/')
             { name: 'coverImages', maxCount: 5 }
         ]), productController.addProduct)
     .get(
-        auth(userAuth.Roles),
+        auth(userAuth.getRoles),
         productController.getAllProducts
     )
 
