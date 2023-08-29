@@ -38,3 +38,38 @@ export const addCart = asyncHandler(async (req, res, next) => {
     await cart.save()
     return res.status(StatusCodes.CREATED).json({ message: 'Done', cart })
 })
+
+
+export const deleteFromeCart = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const productExist = await productModel.findOne({
+        _id: id
+    })
+    if (!productExist) {
+        return next(new ErrorClass(`This Product not Exist!`, StatusCodes.NOT_FOUND))
+    }
+    const userCart = await cartModel.findOne({
+        userId: req.user._id,
+        'products.productId': id
+    })
+    if (!userCart) {
+        return next(new ErrorClass(`This Product not Exist in userCart!`, StatusCodes.NOT_FOUND))
+    }
+    userCart.products.forEach(element => {
+        if (element.productId == id) {
+            userCart.products.splice(userCart.products.indexOf(element), 1)
+        }
+    })
+    userCart.save()
+    return res.status(StatusCodes.OK).json({ message: "Done", userCart })
+})
+///
+export const getUserCart = asyncHandler(async (req, res, next) => {
+    const userCart = await cartModel.findOne({ userId: req.user._id })
+        .populate([{
+            path: 'products.productId',
+            select: 'name price payementPrice description image'
+        }])
+
+    return res.status(StatusCodes.OK).json({ message: 'Done', userCart })
+})
