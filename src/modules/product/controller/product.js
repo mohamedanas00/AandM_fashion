@@ -37,7 +37,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     req.body.slug = slugify(req.body.name.toLowerCase())
     req.body.stock = Number(req.body.quantity)
 
-    req.body.payementPrice = req.body.price - (req.body.price * ((req.body.discount || 0) / 100))
+    req.body.paymentPrice = req.body.price - (req.body.price * ((req.body.discount || 0) / 100))
 
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.image[0].path, { folder: `E-commerce/product/${req.body.slug}/image` })
     req.body.image = { secure_url, public_id }
@@ -60,7 +60,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
         description: req.body.description,
         price: req.body.price,
         discount: req.body.discount,
-        payementPrice: req.body.payementPrice,
+        paymentPrice: req.body.paymentPrice,
         image: req.body.image.secure_url
 
     }))
