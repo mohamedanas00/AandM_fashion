@@ -6,7 +6,7 @@ import productModel from "../../../../DB/models/product.model.js"
 import cartModel from "../../../../DB/models/cart.model.js"
 import orderModel from '../../../../DB/models/order.model.js'
 import { isCouponValid } from "../../../utils/couponValidation.js"
-
+import Stripe from 'stripe';
 
 
 // export const addOrder = asyncHandler(async (req, res, next) => {
@@ -104,22 +104,23 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     })
     if (order) {
         //============increase usage Count of coupon =====
-        console.log("DSADASDSD");
-        console.log(req.coupon);
         if (req.coupon) {
+            let flag = true
             for (const user of req.coupon.usedBy) {
                 if (userId.toString() == user.userId.toString()) {
+                    flag = false
                     user.usageCount += 1
                     break;
                 }
+            }
+            if (flag) {
+                req.coupon.usedBy.push({ userId: req.user._id, usageCount: 1 })
             }
             await req.coupon.save()
         }
         //===decrease product's stock by order's product quantity====
 
         for (const product of cart.products) {
-            console.log(product);
-            console.log(product.productId);
             await productModel.findOneAndUpdate(
                 { _id: product.productId },
                 {
@@ -131,7 +132,45 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         //remove products from userCart if exist
         cart.products = []
         await cart.save()
+        if (paymentMethod == 'card') {
+            const stripe = new Stripe(process.env.STRIP_KEY)
+            let couponStrip
+            if (req.coupon) {
+                console.log("fdfsfdsfvsvdsvknjvnfdjvnfvdsfdsf");
+                couponStrip = await stripe.coupons.create({
+                    percent_off: req.coupon.amount,
+                    duration: "once"
+                })
+            }
+            //================strip payment=========
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                mode: 'payment',
+                success_url: process.env.SUCCESS_URL,
+                cancel_url: process.env.CANCEL_URL,
+                //return new array
+                line_items:
+                    order.products.map((iteration) => {
+                        return {
+                            price_data: {
+                                currency: 'EGP',
+                                product_data: {
+                                    name: iteration.product.name,
+                                    // images: ['https://example.com/t-shirt-image.jpg'], // Optional images
+                                },
+                                unit_amount: iteration.product.paymentPrice * 100,
+                            },
+                            quantity: iteration.quantity,
+                        }
+                    }),
+
+                discounts: couponStrip ? [{ coupon: couponStrip.id }] : [],
+
+            })
+            return res.json({ success: true, results: session.url, order })
+        }
         res.status(StatusCodes.OK).json({ message: 'Done', order })
     }
+
     return next(new Error('Fail to create your Order', { cause: 400 }))
 })
