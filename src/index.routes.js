@@ -23,7 +23,11 @@ const initApp = (app, express) => {
     app.use('/product', productRouter)
     app.use('/coupon', couponRouter)
     app.use('/order', orderRouter)
-    app.use('/review',reviewRouter)
+    app.use('/review', reviewRouter)
+    //welcome message
+    app.use('/', (req, res, next) => {
+        res.json({ message: "Welcome" })
+    })
     app.use('*', (req, res, next) => {
         res.json("In-valid Routing check url  or  method")
     })

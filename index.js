@@ -11,9 +11,4 @@ import initApp from './src/index.routes.js'
 initApp(app, express)
 const port = +process.env.PORT
 
-//welcome message
-app.get('/', (req, res, next) => {
-    res.json({ message: "Welcome" })
-})
-
 app.listen(port, () => console.log(`App listening on port:${port}!`))
