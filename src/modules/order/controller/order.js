@@ -77,7 +77,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             })
     }
 
-    //=============paid Amount =======
+    //=============paid Amount ========
     let paidAmount = 0
     if (req.coupon?.isPercentage) {
         paidAmount = subTotalCart * (1 - (req.coupon.amount || 0) / 100)
@@ -171,6 +171,6 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         }
         res.status(StatusCodes.OK).json({ message: 'Done', order })
     }
-
+    //=============Order Fail==========
     return next(new Error('Fail to create your Order', { cause: 400 }))
 })
