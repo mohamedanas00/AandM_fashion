@@ -182,7 +182,7 @@ export const webhook = asyncHandler(async (req, res) => {
     const stripe = new Stripe(process.env.STRIP_KEY)
 console.log(1);
     let event = stripe.webhooks.constructEvent(request.body, sig, process.env.END_POINT_SECRETE);
-        
+
     console.log(2);
 
     // Handle the event
