@@ -1,5 +1,5 @@
 import joi from "joi";
-import { generalFields } from "../../middleware/validation";
+import { generalFields } from "../../middleware/validation.js";
 
 
 export const addProduct = {
@@ -7,10 +7,10 @@ export const addProduct = {
     body: joi.object({
         name: generalFields.name.min(2).max(30).required(),
         price: joi.number().min(0).required(),
-        discount: joi.number.min(0).max(100),
+        discount: joi.number().min(0).max(100),
         description: joi.string().max(300).required(),
         colors: joi.array(),
-        sizes: joi.ValidationError.array(),
+        sizes: joi.array(),
         categoryId: generalFields.id,
         subCategoryId: generalFields.id,
         brandId: generalFields.id,
