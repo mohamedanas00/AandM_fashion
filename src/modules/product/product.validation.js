@@ -3,6 +3,7 @@ import { generalFields } from "../../middleware/validation";
 
 
 export const addProduct = {
+    params: joi.object().required().keys({}),
     body: joi.object({
         name: generalFields.name.min(2).max(30).required(),
         price: joi.number().min(0).required(),
@@ -16,4 +17,9 @@ export const addProduct = {
     }).required(),
     file: generalFields.file.required(),
     query: joi.object().required().keys({}),
+}
+
+export const getAllProducts = {
+    params: joi.object().required().keys({}),
+    body: joi.object().required().keys({}),
 }
