@@ -9,7 +9,7 @@ const cartRouter = Router()
 
 cartRouter.route('/')
     .post(auth(userAuth.Roles), validation(validator.addCart), cartController.addCart)
-    .get(auth(userAuth.Roles), cartController.getUserCart)
+    .get(auth(userAuth.Roles), validation(validator.getUserCart), cartController.getUserCart)
 
 
 
