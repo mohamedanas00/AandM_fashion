@@ -22,6 +22,7 @@ categoryRouter.route('/')
     )
     .get(
         auth(userAuth.Roles),
+        validation(validator.getAllCategors),
         categoryController.getAllCategors
     )
 
