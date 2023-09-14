@@ -67,7 +67,6 @@ export const deleteFromeCart = asyncHandler(async (req, res, next) => {
 
 export const getUserCart = asyncHandler(async (req, res, next) => {
 
-
     const userCart = await cartModel.findOne({ userId: req.user._id })
         .populate([{
             path: 'products.productId',

@@ -20,3 +20,10 @@ export const deleteFromeCart = {
     body: joi.object().required().keys({}),
     query: joi.object().required().keys({}),
 }
+
+
+export const getUserCart = {
+    params: joi.object().required().keys({}),
+    body: joi.object().required().keys({}),
+    query: joi.object().required().keys({}),
+}
