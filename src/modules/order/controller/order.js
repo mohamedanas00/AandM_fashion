@@ -174,3 +174,30 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     //=============Order Fail==========
     return next(new Error('Fail to create your Order', { cause: 400 }))
 })
+
+
+
+export const webhook = asyncHandler(async (req, res) => {
+    const sig = request.headers['stripe-signature'];
+    const stripe = new Stripe(process.env.STRIP_KEY)
+console.log(1);
+    let event = stripe.webhooks.constructEvent(request.body, sig, process.env.END_POINT_SECRETE);
+        
+    console.log(2);
+
+    // Handle the event
+    switch (event.type) {
+        case 'checkout.session.completed':
+            const order = await orderModel.findByIdAndUpdate(event.data.object.metadata.orderId, {
+                status: 'placed'
+            })
+console.log(3);
+
+            res.json({ order:"123" }) 
+            break;
+        default:
+console.log(4);
+
+            res.json({ message: 'In-valid payment' })
+    }
+})
