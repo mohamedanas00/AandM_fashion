@@ -7,6 +7,8 @@ import cartModel from "../../../../DB/models/cart.model.js"
 import orderModel from '../../../../DB/models/order.model.js'
 import { isCouponValid } from "../../../utils/couponValidation.js"
 import Stripe from 'stripe';
+import CryptoJS from "crypto-js";
+import userModel from "../../../../DB/models/user.model.js"
 
 
 // export const addOrder = asyncHandler(async (req, res, next) => {
@@ -41,12 +43,16 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     const userId = req.user._id
     const {
         address,
-        phone,
         note,
         paymentMethod,
         couponCode,
     } = req.body
-
+    // if (!req.body.phone) {🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+    //     console.log(req.user.phone);
+    //     const incrept = req.user.phone
+    //     console.log(CryptoJS.AES.decrypt(incrept, process.env.encrypt_key));
+    //     req.body.phone = CryptoJS.AES.decrypt(incrept, process.env.encrypt_key).toString()
+    // }
     const cart = await cartModel.findOne({ userId })
     if (!cart || !cart.products.length) {
         return next(new ErrorClass('Empty Cart!', StatusCodes.CONFLICT))
@@ -94,7 +100,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         userId,
         products: orderProducts,
         address,
-        phone,
+        phone: req.body.phone,
         note,
         status,
         paymentMethod,
@@ -180,7 +186,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
 export const webhook = asyncHandler(async (req, res) => {
     const sig = request.headers['stripe-signature'];
     const stripe = new Stripe(process.env.STRIP_KEY)
-console.log(1);
+    console.log(1);
     let event = stripe.webhooks.constructEvent(request.body, sig, process.env.END_POINT_SECRETE);
 
     console.log(2);
@@ -191,12 +197,12 @@ console.log(1);
             const order = await orderModel.findByIdAndUpdate(event.data.object.metadata.orderId, {
                 status: 'placed'
             })
-console.log(3);
+            console.log(3);
 
-            res.json({ order:"123" }) 
+            res.json({ order: "123" })
             break;
         default:
-console.log(4);
+            console.log(4);
 
             res.json({ message: 'In-valid payment' })
     }
