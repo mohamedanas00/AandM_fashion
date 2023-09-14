@@ -18,6 +18,7 @@ brandRouter.route('/')
     )
     .get(
         auth(userAuth.Roles),
+        validation(validator.getAllBrands),
         brandController.getAllBrands)
 
 brandRouter.route('/:id')

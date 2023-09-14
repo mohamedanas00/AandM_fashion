@@ -18,5 +18,11 @@ export const updateBrand = {
     body: joi.object({
         name: generalFields.name.min(2)
     }).required(),
+    query: joi.object().required().keys({}),
     file: generalFields.file
+}
+
+export const getAllBrands = {
+    params: joi.object().required().keys({}),
+    body: joi.object().required().keys({}),
 }
