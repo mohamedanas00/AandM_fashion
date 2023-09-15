@@ -94,3 +94,11 @@ export const restPassword = asyncHandler(async (req, res, next) => {
     })
     return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
 })
+
+export const delteAccount = asyncHandler(async (req, res, next) => {    
+    const userId = req.user._id
+    const user = new userModel({_id: userId})
+    await user.deleteOne({ _id: userId })
+    return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
+
+})

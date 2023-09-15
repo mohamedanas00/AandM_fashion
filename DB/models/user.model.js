@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 
+import * as hooks from '../hooks/user.hooks.js'
+
 const userSchema = Schema({
     name: {
         type: String,
@@ -35,10 +37,6 @@ const userSchema = Schema({
         minlength: 6,
         maxlength: 6
     },
-    // isActive: {
-    //     type: Boolean,
-    //     default: false
-    // },
     confirmEmail: {
         type: Boolean,
         default: false
@@ -53,6 +51,7 @@ const userSchema = Schema({
     }
 )
 
+hooks.deleteOne_H(userSchema)
 
 const userModel = model('User', userSchema)
 
