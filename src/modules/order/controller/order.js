@@ -11,33 +11,6 @@ import CryptoJS from "crypto-js";
 import userModel from "../../../../DB/models/user.model.js"
 
 
-// export const addOrder = asyncHandler(async (req, res, next) => {
-//     const userId = req.user._id
-//     const {
-//         productId,
-//         quantity,
-//         address,
-//         phone,
-//         note,
-//         paymentMethod,
-//         couponCode,
-//     } = req.body
-
-//     //=================couponId check=================
-//     if (couponCode) {
-//         const coupon = await couponModel.findOne({ code: couponCode })
-//         const isCouponValidR = await isCouponValid({ couponCode, userId, next })
-//         if (isCouponValidR !== true) {
-//             return isCouponValidR
-//         }
-//         req.coupon = coupon
-
-//     }
-//     //===========product Check=================
-//     const products = []
-//     const isproductExist
-// })
-
 
 export const OrderFromCart = asyncHandler(async (req, res, next) => {
     const userId = req.user._id
@@ -206,4 +179,43 @@ export const webhook = asyncHandler(async (req, res) => {
 
             res.json({ message: 'In-valid payment' })
     }
+})
+
+
+export const cancelOrder = asyncHandler(async (req, res, next) => {
+    const userId = req.user._id
+    const orderId = req.params.id
+
+    const order = await orderModel.findById(orderId)
+    
+    if (order.paymentMethod == 'card' && order.status == 'waitPayment' ||
+        order.paymentMethod == 'cash' && order.status != 'deliverd') {
+        return next(new ErrorClass('this order cannot be canceled', StatusCodes.CONFLICT))
+    }
+
+    for (const item of order.products) {
+        await productModel.updateOne({
+            _id: item.product.productId
+        }, {
+            $inc: {
+                stock: item.quantity
+            }
+        })
+    }
+
+    if (order.couponId) {
+        await couponModel.updateOne({
+            _id: order.couponId
+        }, {
+            $pull: {
+                usedBy: userId
+            }
+        }
+        )
+    }
+
+    order.status = 'canceled'
+    await order.save()
+
+    return res.status(StatusCodes.OK).json({ message: done })
 })

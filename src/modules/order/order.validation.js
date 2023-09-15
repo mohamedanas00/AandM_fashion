@@ -13,3 +13,12 @@ export const OrderFromCart = {
     }).required(),
     query: joi.object().required().keys({}),
 }
+
+
+export const cancelOrder = {
+    params: joi.object({
+        id: generalFields.id
+    }).required(),
+    body: joi.object().required().keys({}),
+    query: joi.object().required().keys({}),
+}

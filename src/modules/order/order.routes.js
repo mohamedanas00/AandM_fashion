@@ -14,6 +14,9 @@ orderRouter.route('/')
         validation(validator.OrderFromCart),
         orderController.OrderFromCart)
 
+orderRouter.route('/:id')
+    .delete(auth(userAuth.Roles), validation(validator.cancelOrder),
+        orderController.cancelOrder)
 
 
 orderRouter.post('/webhook',
