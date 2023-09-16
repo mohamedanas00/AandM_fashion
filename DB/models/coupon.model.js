@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+//7mda fdfsf
 const couponSchema = Schema({
     code: { type: String, unique: true, lowercase: true, required: true },
     amount: { type: Number, required: true, min: 0 },
