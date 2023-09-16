@@ -14,7 +14,8 @@ export const validation = (joiSchema) => {
             }
         })
         if (validationErr.length) {
-            return res.json({ message: "Valdation Error", validationErr })
+            return res.status(403).json({ message: "Valdation Error", validationErr })
+            // return res.json({ message: "Valdation Error", validationErr })
         }
         return next()
     }
