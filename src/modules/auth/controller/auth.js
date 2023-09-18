@@ -112,6 +112,27 @@ export const delteAccount = asyncHandler(async (req, res, next) => {
     return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
 })
 
+export const updateProfile = asyncHandler (async (req,res,next)=>{
+    const {name , email ,phone ,birthday} = req.body
+    const id = req.user._id
+    if(email){
+        const isEmailExist = await userModel.findOne({ email: req.body.email })
+        if (isEmailExist) {
+            return next(new ErrorClass(`This email:"${req.body.email}" Already Exist!`, StatusCodes.CONFLICT))
+        }
+    }
+    if(phone){
+        phone = CryptoJS.AES.encrypt(req.body.phone, process.env.encrypt_key).toString()
+    }
+    const user=await userModel.updateOne({_id:id},{
+        name , 
+        email,
+        phone,
+        birthday
+    })
+    return res.status(StatusCodes.OK).json({message:"Done"},user)
+
+})
 
 // export const socialLogin =asyncHandler( async (req,res,next)=>{
 //     const {idToken,phone,birthday} =req.body

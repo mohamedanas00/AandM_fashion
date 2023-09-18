@@ -12,6 +12,7 @@ authRouter.post('/logIn', validation(validator.logIn), authController.logIn)
 authRouter.patch('/sendCode', validation(validator.sendCode), authController.sendCode)
 authRouter.put('/restPassword', authController.restPassword)
 authRouter.delete('/deleteAccount', auth([roles.user]), authController.delteAccount)
+authRouter.put('/updateProfile', auth([roles.user]), authController.updateProfile)
 
 
 
