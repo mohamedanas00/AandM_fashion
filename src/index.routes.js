@@ -9,11 +9,12 @@ import productRouter from "./modules/product/proutuct.routes.js"
 import reviewRouter from "./modules/review/review.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
 import { golbalErrorHandling } from "./utils/errorHandling.js"
-
+import morgan from 'morgan'
 
 
 const initApp = (app, express) => {
     //convert Buffer Data
+    app.use(morgan('tiny'))
     app.use((req,res,next)=>{
         if(req.originalUrl=='/order/webhook'){
             next();
