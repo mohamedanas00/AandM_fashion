@@ -22,7 +22,6 @@ const userSchema = Schema({
     },
     phone: {
         type: String,
-        required: true,
     },
     birthday: {
         type: Date

@@ -10,7 +10,7 @@ export const signUp = {
         email: generalFields.email,
         password: generalFields.password.pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)).required(),
         cPassword: generalFields.cPassword.valid(joi.ref("password")).required(),
-        phone: joi.string().trim().pattern(/^(010|012|011|015)\d{8}$/).required(),
+        phone: joi.string().trim().pattern(/^(010|012|011|015)\d{8}$/),
         birthday: joi.date()
     }),
     query: joi.object().required().keys({}),
