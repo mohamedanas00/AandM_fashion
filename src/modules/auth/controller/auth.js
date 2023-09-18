@@ -113,7 +113,7 @@ export const delteAccount = asyncHandler(async (req, res, next) => {
 })
 
 export const updateProfile = asyncHandler (async (req,res,next)=>{
-    const {name , email ,phone ,birthday} = req.body
+    let {name , email ,phone ,birthday} = req.body
     const id = req.user._id
     if(email){
         const isEmailExist = await userModel.findOne({ email: req.body.email })
@@ -122,15 +122,15 @@ export const updateProfile = asyncHandler (async (req,res,next)=>{
         }
     }
     if(phone){
-        phone = CryptoJS.AES.encrypt(req.body.phone, process.env.encrypt_key).toString()
+        phone = CryptoJS.AES.encrypt(phone, process.env.encrypt_key).toString()
     }
-    const user=await userModel.updateOne({_id:id},{
+    await userModel.updateOne({_id:id},{
         name , 
         email,
         phone,
         birthday
     })
-    return res.status(StatusCodes.OK).json({message:"Done"},user)
+    return res.status(StatusCodes.ACCEPTED).json({message:"Done"})
 
 })
 
