@@ -26,4 +26,5 @@ productRouter.route('/:id')
     .delete(
         auth(userAuth.Roles),
         validation(idValidation), productController.deleteProducts)
+    .put(auth(userAuth.Roles),validation(validator.updateProducts),productController.updateProducts)
 export default productRouter

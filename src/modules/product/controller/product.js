@@ -83,26 +83,39 @@ export const getAllProducts = asyncHandler(async (req, res, next) => {
 
 export const deleteProducts = deleteGlModel(productModel, "product")
 
-//////🚩🚩🚩🚩🚩-----🚩🚩🚩🚩🚩🚩🚩
+
 export const updateProducts = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    if (req.body.name) {
+    const {name,price,discount,colors,sizes}=req.body
+    const isExist = await productModel.findById(id)
+    if(!isExist){
+        return next(new ErrorClass('Product not Exist!', StatusCodes.NOT_FOUND))
+    }
+    if (name) {
         const isNameExist = await productModel.findOne({
-            name: req.body.name,
+            name,
             _id: { $ne: id }
         })
         if (isNameExist) {
             return next(new ErrorClass('This Product name already Exist!', StatusCodes.NOT_FOUND))
         }
-        req.body.slug = slugify(req.body.name.toLowerCase())
+        var slug = slugify(name.toLowerCase())
     }
-    if (req.files) {
-        let slug;
-        if (req.body.slug) {
-            slug = req.body.slug
-        } else {
-            slug = isExist.slug
+    if(discount){
+        var paymentPrice= 0
+        if(price){
+           paymentPrice = price - (price * ((discount || 0) / 100))
+        }else{
+            paymentPrice = isExist.price - (isExist.price * ((discount || 0) / 100))
         }
-
     }
+    await productModel.updateOne({ _id:id},{
+        name,
+        slug,
+        price,
+        discount,
+        colors,
+        sizes,
+        paymentPrice,
+    })
 })
