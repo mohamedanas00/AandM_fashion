@@ -28,7 +28,9 @@ export const signUp = asyncHandler(async (req, res, next) => {
     const html = emailHtml(code)
     sendEmail({ to: req.body.email, subject: "Confirm Email", html })
     const user = await userModel.create(req.body)
-    await cartModel.create({ userId: user._id })
+    if(user.role == "user"){
+        await cartModel.create({ userId: user._id })
+    }
     return res.status(StatusCodes.CREATED).json({ message: "Done", user })
 })
 
@@ -108,7 +110,6 @@ export const delteAccount = asyncHandler(async (req, res, next) => {
     const user = new userModel({_id: userId})
     await user.deleteOne({ _id: userId })
     return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
-
 })
 
 

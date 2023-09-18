@@ -24,7 +24,7 @@ const userSchema = Schema({
         type: String,
     },
     birthday: {
-        type: Date
+        type: Date,
     },
     role: {
         type: String,
