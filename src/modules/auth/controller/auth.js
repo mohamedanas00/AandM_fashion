@@ -8,9 +8,8 @@ import { sendEmail, emailHtml } from "../../../utils/email.js";
 import { nanoid } from "nanoid";
 import { generateToken } from "../../../utils/generateAndVerifyToken.js";
 import cartModel from "../../../../DB/models/cart.model.js";
-import OAuth2Client from 'google-auth-library';
-import { binary } from "joi";
-const client = new OAuth2Client();
+// import OAuth2Client from 'google-auth-library';
+// const client = new OAuth2Client();
 
 export const signUp = asyncHandler(async (req, res, next) => {
     const isEmailExist = await userModel.findOne({ email: req.body.email })
