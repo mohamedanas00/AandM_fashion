@@ -8,6 +8,9 @@ import { sendEmail, emailHtml } from "../../../utils/email.js";
 import { nanoid } from "nanoid";
 import { generateToken } from "../../../utils/generateAndVerifyToken.js";
 import cartModel from "../../../../DB/models/cart.model.js";
+import OAuth2Client from 'google-auth-library';
+const client = new OAuth2Client();
+
 export const signUp = asyncHandler(async (req, res, next) => {
     const isEmailExist = await userModel.findOne({ email: req.body.email })
     if (isEmailExist) {
@@ -49,6 +52,9 @@ export const logIn = asyncHandler(async (req, res, next) => {
     const isExist = await userModel.findOne({ email })
     if (!isExist) {
         return next(new ErrorClass(`In-valide user Information`, StatusCodes.NOT_ACCEPTABLE))
+    }
+    if( isExist.provider == 'google' ){
+        return next(new ErrorClass('please use google login'),StatusCodes.CONFLICT)
     }
     const match = compare(password, isExist.password)
     if (!match) {
@@ -102,3 +108,44 @@ export const delteAccount = asyncHandler(async (req, res, next) => {
     return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
 
 })
+
+
+// export const socialLogin =asyncHandler( async (req,res,next)=>{
+//     const {idToken} =req.body
+//     const ticket = await client.verifyIdToken({
+//         idToken,
+//         //?clientId
+//         audience:,
+//     })
+//     const {email , name } =ticket.getPayload();
+//     const isExist = await userModel.findOne({email})
+//     if(!isExist){
+//         const newUser =new userModel({
+//             name,
+//             email,
+//             password:nanoid(6),
+//             phone,
+//             confirmEmail:true,
+//             provider:'google',
+//         })
+//         await newUser.save()
+//         await cartModel.create({userId: newUser._id})
+//         const payload = {
+//             id: newUser._id,
+//             email: newUser.email
+//         }
+//         const token = generateToken(payload)
+//         return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
+//     }else if(isExist && user.provider == 'google'){
+//         const payload = {
+//             id: isExist._id,
+//             email: isExist.email
+//         }
+//         const token = generateToken(payload)
+//         return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
+//     }else if(isExist&& user.provider == 'system' ){
+//         return next(new ErrorClass('please use system login'),StatusCodes.CONFLICT)
+//     }
+//     return next(new ErrorClass('Please signUP first'),StatusCodes.CONFLICT)
+
+// })

@@ -44,6 +44,11 @@ const userSchema = Schema({
     block: {
         type: Boolean,
         default: false
+    },
+    provider:{
+        type:String,
+        default:'system',
+        enum:['system','google']
     }
 },
     {
