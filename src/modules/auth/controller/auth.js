@@ -111,45 +111,45 @@ export const delteAccount = asyncHandler(async (req, res, next) => {
 })
 
 
-export const socialLogin =asyncHandler( async (req,res,next)=>{
-    const {idToken,phone,birthday} =req.body
-    const ticket = await client.verifyIdToken({
-        idToken,
-        //?clientId
-        audience:,
-    })
-    const {email , name } =ticket.getPayload();
-    const isExist = await userModel.findOne({email})
-    if(!isExist){
-        const newUser =new userModel({
-            name,
-            email,
-            password:nanoid(6),
-            phone,
-            confirmEmail:true,
-            provider:'google',
-        })
-        if(birthday){
-            newUser.birthday=birthday
-        }
-        await newUser.save()
-        await cartModel.create({userId: newUser._id})
-        const payload = {
-            id: newUser._id,
-            email: newUser.email
-        }
-        const token = generateToken(payload)
-        return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
-    }else if(isExist && isExist.provider == 'google'){
-        const payload = {
-            id: isExist._id,
-            email: isExist.email
-        }
-        const token = generateToken(payload)
-        return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
-    }else if(isExist&& isExist.provider == 'system' ){
-        return next(new ErrorClass('Please use system login'),StatusCodes.CONFLICT)
-    }
-    return next(new ErrorClass('Please SignUp in Google First!'),StatusCodes.CONFLICT)
+// export const socialLogin =asyncHandler( async (req,res,next)=>{
+//     const {idToken,phone,birthday} =req.body
+//     const ticket = await client.verifyIdToken({
+//         idToken,
+//         //?clientId
+//         audience:,
+//     })
+//     const {email , name } =ticket.getPayload();
+//     const isExist = await userModel.findOne({email})
+//     if(!isExist){
+//         const newUser =new userModel({
+//             name,
+//             email,
+//             password:nanoid(6),
+//             phone,
+//             confirmEmail:true,
+//             provider:'google',
+//         })
+//         if(birthday){
+//             newUser.birthday=birthday
+//         }
+//         await newUser.save()
+//         await cartModel.create({userId: newUser._id})
+//         const payload = {
+//             id: newUser._id,
+//             email: newUser.email
+//         }
+//         const token = generateToken(payload)
+//         return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
+//     }else if(isExist && isExist.provider == 'google'){
+//         const payload = {
+//             id: isExist._id,
+//             email: isExist.email
+//         }
+//         const token = generateToken(payload)
+//         return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
+//     }else if(isExist&& isExist.provider == 'system' ){
+//         return next(new ErrorClass('Please use system login'),StatusCodes.CONFLICT)
+//     }
+//     return next(new ErrorClass('Please SignUp in Google First!'),StatusCodes.CONFLICT)
 
-})
+// })
