@@ -138,14 +138,11 @@ export const getUserData = asyncHandler(async(req,res,next)=>{
     if(req.user.phone){
         req.user.phone= CryptoJS.AES.decrypt(req.user.phone, process.env.encrypt_key).toString(CryptoJS.enc.Utf8);
     } 
-    if(req.user.birthday){
-        req.user.birth=`${req.user.birthday.getUTCDate()}-${req.user.birthday.getUTCMonth() + 1}-${req.user.birthday.getUTCFullYear()}`
-    }
     return res.status(StatusCodes.OK).json({
         name:req.user.name,
         email:req.user.email,
         phone:req.user.phone,
-        birthday:req.user.birth
+        birthday:req.user.birthday
     })
 })
 
