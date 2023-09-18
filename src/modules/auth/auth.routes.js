@@ -11,7 +11,7 @@ authRouter.patch('/', validation(validator.confirmEmail), authController.confirm
 authRouter.post('/logIn', validation(validator.logIn), authController.logIn)
 authRouter.patch('/sendCode', validation(validator.sendCode), authController.sendCode)
 authRouter.put('/restPassword', authController.restPassword)
-authRouter.delete('/deleteAccount', auth([roles.user]),validation(validator.deleteAccount) ,authController.delteAccount)
+authRouter.delete('/', auth([roles.user]),validation(validator.deleteAccount) ,authController.delteAccount)
 authRouter.put('/updateProfile', auth([roles.user]),validation(validator.updateProfile) ,authController.updateProfile)
 authRouter.get('/',auth([roles.user]),validation(validator.getUserData),authController.getUserData)
 
