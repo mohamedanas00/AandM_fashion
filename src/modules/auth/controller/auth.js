@@ -134,6 +134,18 @@ export const updateProfile = asyncHandler (async (req,res,next)=>{
 
 })
 
+export const getUserData = asyncHandler(async(req,res,next)=>{
+    if(req.user.phone){
+        req.user.phone= CryptoJS.AES.decrypt(req.user.phone, process.env.encrypt_key).toString(CryptoJS.enc.Utf8);
+    }
+    return res.status(StatusCodes.OK).json({
+        name:req.user.name,
+        email:req.user.email,
+        phone:req.user.phone,
+        birthday:req.user.birthday
+    })
+})
+
 // export const socialLogin =asyncHandler( async (req,res,next)=>{
 //     const {idToken,phone,birthday} =req.body
 //     const ticket = await client.verifyIdToken({

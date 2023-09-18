@@ -13,7 +13,7 @@ authRouter.patch('/sendCode', validation(validator.sendCode), authController.sen
 authRouter.put('/restPassword', authController.restPassword)
 authRouter.delete('/deleteAccount', auth([roles.user]),validation(validator.deleteAccount) ,authController.delteAccount)
 authRouter.put('/updateProfile', auth([roles.user]),validation(validator.updateProfile) ,authController.updateProfile)
-
+authRouter.get('/',auth([roles.user]),validation(validator.getUserData),authController.getUserData)
 
 
 export default authRouter

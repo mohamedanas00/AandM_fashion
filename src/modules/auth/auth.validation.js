@@ -76,3 +76,9 @@ export const deleteAccount={
     body: joi.object().required().keys({}),
     query: joi.object().required().keys({}),
 }
+
+export const getUserData={
+    params: joi.object().required().keys({}),
+    body: joi.object().required().keys({}),
+    query: joi.object().required().keys({}),
+}
