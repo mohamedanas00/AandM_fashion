@@ -14,6 +14,7 @@ import morgan from 'morgan'
 
 const initApp = (app, express) => {
     //convert Buffer Data
+    console.log('Morgan middleware is applied'); // Add this line
     app.use(morgan('tiny'))
     app.use((req,res,next)=>{
         if(req.originalUrl=='/order/webhook'){
