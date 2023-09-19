@@ -214,7 +214,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
     // send mail with defined transport object
     try {
         let info = await transporter.sendMail({
-            from: `"A&M" <${process.env.gmail}>`,
+            from: `"Fashion🕺" <${process.env.gmail}>`,
             to,
             subject,
             html,
@@ -223,8 +223,6 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
     } catch (error) {
         console.error('Error sending email:', error);
     }
-
-    return info.rejected.length ? false : true
 }
 
 
