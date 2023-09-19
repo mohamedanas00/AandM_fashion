@@ -212,7 +212,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
     });
     console.log("center😎");
     console.log("7mdaaatest👍1️⃣👍");
-
+    console.log(process.env.gmail);
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: `"A&M" <${process.env.gmail}>`, 
@@ -220,6 +220,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
         subject,
         html,
     });
+
     console.log("7mdaaatest👍2️⃣👍");
     console.log(info.rejected.length);
     return info.rejected.length ? false : true
