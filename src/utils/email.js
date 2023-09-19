@@ -221,6 +221,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
         html,
         // attachments
     });
+    console.log("7mdaaatest👍👍👍👍");
     console.log(info.rejected.length);
     return info.rejected.length ? false : true
 }
