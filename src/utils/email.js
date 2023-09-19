@@ -163,7 +163,7 @@ export const emailHtml = (Text) => {
                         <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                             <p style="margin: 0;">Follow me on:</p>
                             <div>
-                                <a style="padding-right:10px" href="https://instagram.com/suraj_vsk"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="25"></a>
+                                <a style="padding-right:10px" href="https://www.instagram.com/americaneagleme/"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="25"></a>
                                 <a href="https://twitter.com/suraj_vsk"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="25"></a>
                             </div>
                         </td>
@@ -217,7 +217,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
             from: `"Fashion🕺" <${process.env.gmail}>`,
             to,
             subject,
-            html,
+            html, 
         });
         console.log('Email sent: ' + info.response);
     } catch (error) {
