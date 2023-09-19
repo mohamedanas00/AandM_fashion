@@ -208,8 +208,9 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
             user: process.env.gmail, // generated ethereal user
             pass: process.env.EMAIL_PASSWORD, // generated ethereal password
         },
+        
     });
-
+    console.log("center😎😎");
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: `"A&M" <${process.env.gmail}>`, // sender address
@@ -220,6 +221,7 @@ export const sendEmail = async function ({ to, cc, bcc, subject, html, attachmen
         html,
         // attachments
     });
+    console.log(info.rejected.length);
     return info.rejected.length ? false : true
 }
 
