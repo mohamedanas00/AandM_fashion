@@ -164,7 +164,7 @@ export const emailHtml = (Text) => {
                             <p style="margin: 0;">Follow me on:</p>
                             <div>
                                 <a style="padding-right:10px" href="https://www.instagram.com/americaneagleme/"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="25"></a>
-                                <a href="https://twitter.com/suraj_vsk"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="25"></a>
+                                <a href="https://twitter.com/aeo?lang=en"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="25"></a>
                             </div>
                         </td>
                     </tr>
