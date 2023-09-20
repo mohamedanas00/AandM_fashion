@@ -23,7 +23,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass(`Please check your cPassword`, StatusCodes.CONFLICT))
     }
     req.body.password = hash(req.body.password)
-    const code = nanoid(6)
+    const code = nanoid(4)
     req.body.confirmCode = code
     const html = emailHtml(code)
     sendEmail({ to: req.body.email, subject: "Confirm Email", html })
