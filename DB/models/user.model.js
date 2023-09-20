@@ -33,8 +33,8 @@ const userSchema = Schema({
     },
     confirmCode: {
         type: String,
-        minlength: 6,
-        maxlength: 6
+        minlength: 4,
+        maxlength: 4
     },
     confirmEmail: {
         type: Boolean,
