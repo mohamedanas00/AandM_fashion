@@ -12,7 +12,6 @@ const subcategoryRouter = Router({ mergeParams: true })
 
 subcategoryRouter.route('/')
     .get(
-        auth(userAuth.Roles),
         validation(validator.getAllSubcategors),
         subcategoryController.getAllSubcategors
     )

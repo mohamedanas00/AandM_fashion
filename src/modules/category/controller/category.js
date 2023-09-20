@@ -26,7 +26,7 @@ export const addCategory = asyncHandler(async (req, res, next) => {
 })
 
 export const getAllCategors = asyncHandler(async (req, res, next) => {
-
+    
     let apiFeatures = new ApiFeatures(categoryModel.find(), req.query).fields().pagination(categoryModel).search().sort().filter()
     let categorys = await apiFeatures.mongooseQuery
         .populate([{
