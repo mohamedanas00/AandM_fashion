@@ -57,6 +57,9 @@ export const logIn = asyncHandler(async (req, res, next) => {
     if (!isExist) {
         return next(new ErrorClass(`In-valide user Information`, StatusCodes.NOT_ACCEPTABLE))
     }
+    if(isExist.confirmEmail==false){
+        return next(new ErrorClass(`NON_AUTHORITATIVE`, StatusCodes.NON_AUTHORITATIVE_INFORMATION))
+    }
     if( isExist.provider == 'google' ){
         return next(new ErrorClass('please use google login'),StatusCodes.CONFLICT)
     }
