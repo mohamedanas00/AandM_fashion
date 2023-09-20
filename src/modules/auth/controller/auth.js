@@ -26,7 +26,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
     const code = nanoid(4)
     req.body.confirmCode = code
     const html = emailHtml(code)
-    sendEmail({ to: req.body.email, subject: "Confirm Email", html })
+    //*sendEmail({ to: req.body.email, subject: "Confirm Email", html })
     const user = await userModel.create(req.body)
     if(user.role == "user"){
         await cartModel.create({ userId: user._id })
