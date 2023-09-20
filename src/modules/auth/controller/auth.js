@@ -46,7 +46,7 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
     if (code != isEmailExist.confirmCode) {
         return next(new ErrorClass(`In-Valide code`, StatusCodes.BAD_REQUEST))
     }
-    const newCode = nanoid(6)
+    const newCode = nanoid(4)
     await userModel.updateOne({ email }, { confirmEmail: true, confirmCode: newCode })
     return res.status(StatusCodes.ACCEPTED).json({ message: "Done" })
 })
@@ -78,7 +78,7 @@ export const sendCode = asyncHandler(async (req, res, next) => {
     if (!isEmailExist) {
         return next(new ErrorClass(`This user not Exist!`, StatusCodes.NOT_FOUND))
     }
-    const code = nanoid(6)
+    const code = nanoid(4)
     const html = emailHtml(code)
     sendEmail({ to: email, subject: "Confirm Email", html })
     await userModel.updateOne({ email }, {
@@ -97,7 +97,7 @@ export const restPassword = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass(`In-Valide code`, StatusCodes.BAD_REQUEST))
     }
     password = hash(password)
-    const newCode = nanoid(6)
+    const newCode = nanoid(4)
     await userModel.updateOne({ email }, {
         password,
         confirmCode: newCode

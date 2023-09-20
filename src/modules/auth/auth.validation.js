@@ -50,7 +50,7 @@ export const restPassword = {
     body: joi.object({
         email: generalFields.email,
         password: generalFields.password.pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)).required(),
-        code: joi.string().min(6).max(6).required()
+        code: joi.string().min(4).max(4).required()
     }),
     query: joi.object().required().keys({}),
 
