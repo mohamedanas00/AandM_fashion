@@ -21,7 +21,7 @@ export const confirmEmail = {
     params: joi.object().required().keys({}),
     body: joi.object({
         email: generalFields.email,
-        code: joi.string().min(6).max(6).required()
+        code: joi.string().min(4).max(4).required()
     }),
     query: joi.object().required().keys({}),
 
