@@ -8,6 +8,7 @@ import orderRouter from "./modules/order/order.routes.js"
 import productRouter from "./modules/product/proutuct.routes.js"
 import reviewRouter from "./modules/review/review.routes.js"
 import subcategoryRouter from "./modules/subcategory/subcategory.routes.js"
+import userRouter from "./modules/user/user.routes.js"
 import { golbalErrorHandling } from "./utils/errorHandling.js"
 import morgan from 'morgan'
 
@@ -25,6 +26,7 @@ const initApp = (app, express) => {
     })
     // app.use(express.json())
     app.use('/auth', authRouter)
+    app.use('/user', userRouter)
     app.use('/cart', cartRouter)
     app.use('/category', categoryRouter)
     app.use('/subcategory', subcategoryRouter)
