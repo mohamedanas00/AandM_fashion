@@ -40,15 +40,19 @@ const userSchema = Schema({
         type: Boolean,
         default: false
     },
-    block: {
-        type: Boolean,
-        default: false
-    },
     provider:{
         type:String,
         default:'system',
         enum:['system','google']
-    }
+    },
+    favouriteProducts:[{
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+    }],
+    block: {
+        type: Boolean,
+        default: false
+    },
 },
     {
         timestamps: true,
