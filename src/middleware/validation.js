@@ -29,11 +29,7 @@ const validateObjectId = (value, helper) => {
 
 export const generalFields = {
 
-    email: joi.string().email({
-        minDomainSegments: 2,
-        maxDomainSegments: 4,
-        tlds: { allow: ['com', 'net'] }
-    }).required(),
+    email: joi.string().pattern(new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)).required(),
     password: joi.string(),
     cPassword: joi.string(),
     id: joi.string().custom(validateObjectId).required(),
