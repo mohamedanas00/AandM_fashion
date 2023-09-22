@@ -11,11 +11,13 @@ const productRouter = Router()
 productRouter.route('/')
     .post(
         auth(userAuth.Roles),
-        validation(validator.addProduct),
         fileUpload(fileValidation.image).fields([
             { name: 'image', maxCount: 1 },
             { name: 'coverImages', maxCount: 5 }
-        ]), productController.addProduct)
+        ]),
+        validation(validator.addProduct),
+        productController.addProduct
+    )
     .get(
         validation(validator.getAllProducts),
         productController.getAllProducts
@@ -26,5 +28,5 @@ productRouter.route('/:id')
     .delete(
         auth(userAuth.Roles),
         validation(idValidation), productController.deleteProducts)
-    .put(auth(userAuth.Roles),validation(validator.updateProducts),productController.updateProducts)
+    .put(auth(userAuth.Roles), validation(validator.updateProducts), productController.updateProducts)
 export default productRouter

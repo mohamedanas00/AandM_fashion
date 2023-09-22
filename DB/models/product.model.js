@@ -15,6 +15,7 @@ const productSchema = Schema({
     paymentPrice: { type: Number, default: 0, min: 0, },
     description: {
         type: String, required: true,
+        required: true,
         minlength: [10, 'too short description name '],
         maxlength: [300, 'too long description name,description should be less than 100'],
         trim: true//delte space from first and end

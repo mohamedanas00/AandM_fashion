@@ -20,7 +20,6 @@ export const addProduct = asyncHandler(async (req, res, next) => {
 
         return res.status(StatusCodes.ACCEPTED).json({ message: "Done", product: isNameExist })
     }
-    console.log(req.body.categoryId);
     const isCategoryExist = await categoryModel.findById(req.body.categoryId)
     const isSubcategoryExist = await subcategoryModel.findById(req.body.subcategoryId)
     const isBrandExist = await brandModel.findById(req.body.brandId)
@@ -38,7 +37,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     req.body.stock = Number(req.body.quantity)
 
     req.body.paymentPrice = req.body.price - (req.body.price * ((req.body.discount || 0) / 100))
-
+    
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.image[0].path, { folder: `E-commerce/product/${req.body.slug}/image` })
     req.body.image = { secure_url, public_id }
     if (req.files.coverImages.length) {
@@ -62,7 +61,6 @@ export const addProduct = asyncHandler(async (req, res, next) => {
         discount: req.body.discount,
         paymentPrice: req.body.paymentPrice,
         image: req.body.image.secure_url
-
     }))
     const product = await productModel.create(req.body)
     res.status(StatusCodes.CREATED).json({ message: "Done", product })
