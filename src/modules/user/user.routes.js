@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as userController from './controller/user.js'
 import * as validator from './user.validation.js'
 import { validation } from "../../middleware/validation.js";
+import auth, { roles } from "../../middleware/auth.js";
 const userRouter = Router()
 
 userRouter.delete('/', auth([roles.user]),validation(validator.deleteAccount) ,userController.deleteAccount)
