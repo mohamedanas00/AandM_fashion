@@ -5,9 +5,16 @@ import { validation } from "../../middleware/validation.js";
 import auth, { roles } from "../../middleware/auth.js";
 const userRouter = Router()
 
-userRouter.delete('/', auth([roles.user]),validation(validator.deleteAccount) ,userController.deleteAccount)
-userRouter.put('/', auth([roles.user]),validation(validator.updateProfile) ,userController.updateProfile)
-userRouter.get('/',auth([roles.user]),validation(validator.getUserData),userController.getUserData)
+userRouter.route('/')
+    .delete(auth([roles.user]),validation(validator.deleteAccount) ,userController.deleteAccount)
+    .put(auth([roles.user]),validation(validator.updateProfile) ,userController.updateProfile)
+    .get(auth([roles.user]),validation(validator.getUserData),userController.getUserData)
 
+userRouter.route('/favourite')
+    .get(auth([roles.user]),userController.getFavouriteProducts)
+
+
+userRouter.route('/:id')
+    .patch(auth([roles.user]),userController.addToFavourite)
 
 export default userRouter
