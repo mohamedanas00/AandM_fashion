@@ -162,7 +162,6 @@ export const webhook = asyncHandler(async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event = stripe.webhooks.constructEvent(req.body, sig, process.env.END_POINT_SECRETE);
 
-    console.log("SDADDSDASD🚨🚨🚨🚨");
     if(event.type == 'checkout.session.completed'){
         const order = await orderModel.findByIdAndUpdate(
             event.data.object.metadata.orderId,
@@ -187,7 +186,7 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
     const order = await orderModel.findById(orderId)
     
     if (order.paymentMethod == 'card' && order.status == 'waitPayment' ||
-        order.paymentMethod == 'cash' && order.status != 'deliverd') {
+        order.paymentMethod == 'cash' && order.status != 'delivered') {
         return next(new ErrorClass('this order cannot be canceled', StatusCodes.CONFLICT))
     }
 
