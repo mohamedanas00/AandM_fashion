@@ -124,6 +124,9 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 mode: 'payment',
+                metadata:{
+                    orderId:order._id.toString()
+                },
                 success_url: process.env.SUCCESS_URL,
                 cancel_url: process.env.CANCEL_URL,
                 //return new array
