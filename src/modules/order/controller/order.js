@@ -9,6 +9,7 @@ import { isCouponValid } from "../../../utils/couponValidation.js"
 import Stripe from 'stripe';
 import CryptoJS from "crypto-js";
 import userModel from "../../../../DB/models/user.model.js"
+import { cardPayment } from "../../../utils/cardStripPayment.js"
 
 const stripe = new Stripe(process.env.STRIP_KEY)
 
@@ -31,7 +32,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     if (!cart || !cart.products.length) {
         return next(new ErrorClass('Empty Cart!', StatusCodes.CONFLICT))
     }
-    //=================couponId check=================
+    //*=================couponId check=================
     if (couponCode) {
         const coupon = await couponModel.findOne({ code: couponCode })
         const isCouponValidR = await isCouponValid({ couponCode, userId, next })
@@ -40,7 +41,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         }
         req.coupon = coupon
     }
-    //============products of order==============
+    //*============products of order==============
     let orderProducts = []
     let subTotalCart = 0
     for (const product of cart.products) {
@@ -57,7 +58,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             })
     }
 
-    //=============paid Amount ========
+    //*=============paid Amount ========
     let paidAmount = 0
     if (req.coupon?.isPercentage) {
         paidAmount = subTotalCart * (1 - (req.coupon.amount || 0) / 100)
@@ -66,10 +67,10 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     } else {
         paidAmount = subTotalCart
     }
-    //================paymentMethod  + orderStatus =====
+    //*================paymentMethod  + orderStatus =====
     let status;
     paymentMethod == 'cash' ? (status = 'placed') : (status = 'waitPayment')
-    //================OrderObject========
+    //*================OrderObject========
     const order = await orderModel.create({
         userId,
         products: orderProducts,
@@ -83,7 +84,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         couponId: req.coupon?._id,
     })
     if (order) {
-        //============increase usage Count of coupon =====
+        //*============increase usage Count of coupon =====
         if (req.coupon) {
             let flag = true
             for (const user of req.coupon.usedBy) {
@@ -98,8 +99,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             }
             await req.coupon.save()
         }
-        //===decrease product's stock by order's product quantity====
-
+        //*===decrease product's stock by order's product quantity====
         for (const product of cart.products) {
             await productModel.findOneAndUpdate(
                 { _id: product.productId },
@@ -108,47 +108,16 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
                 },
             )
         }
-
-        //remove products from userCart if exist
+        //*remove products from userCart if exist
         cart.products = []
         await cart.save()
         if (paymentMethod == 'card') {
-            let couponStrip
-            if (req.coupon) {
-                couponStrip = await stripe.coupons.create({
-                    percent_off: req.coupon.amount,
-                    duration: "once"
-                })
+            const session = await cardPayment({ req, stripe, order, next })
+            if (session) {
+                return res.json({ success: true, results: session.url, order })
+            }else{
+                return next (new ErrorClass("Session creation failed:",StatusCodes.BAD_REQUEST))
             }
-            //================strip payment=========
-            const session = await stripe.checkout.sessions.create({
-                payment_method_types: ['card'],
-                mode: 'payment',
-                metadata:{
-                    orderId:order._id.toString()
-                },
-                success_url: process.env.SUCCESS_URL,
-                cancel_url: process.env.CANCEL_URL,
-                //return new array
-                line_items:
-                    order.products.map((iteration) => {
-                        return {
-                            price_data: {
-                                currency: 'EGP',
-                                product_data: {
-                                    name: iteration.product.name,
-                                    // images: ['https://example.com/t-shirt-image.jpg'], // Optional images
-                                },
-                                unit_amount: iteration.product.paymentPrice * 100,
-                            },
-                            quantity: iteration.quantity,
-                        }
-                    }),
-
-                discounts: couponStrip ? [{ coupon: couponStrip.id }] : [],
-
-            })
-            return res.json({ success: true, results: session.url, order })
         }
         res.status(StatusCodes.OK).json({ message: 'Done', order })
     }
@@ -162,19 +131,19 @@ export const webhook = asyncHandler(async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event = stripe.webhooks.constructEvent(req.body, sig, process.env.END_POINT_SECRETE);
 
-    if(event.type == 'checkout.session.completed'){
+    if (event.type == 'checkout.session.completed') {
         const order = await orderModel.findByIdAndUpdate(
             event.data.object.metadata.orderId,
             {
-                status:"placed",
+                status: "placed",
             },
             {
-                new:true,
+                new: true,
             }
         )
-        res.json({order})
-    }else{
-        res.json({message:"invalid payment"})
+        res.json({ order })
+    } else {
+        res.json({ message: "invalid payment" })
     }
 })
 
@@ -184,7 +153,7 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
     const orderId = req.params.id
 
     const order = await orderModel.findById(orderId)
-    
+
     if (order.paymentMethod == 'card' && order.status == 'waitPayment' ||
         order.paymentMethod == 'cash' && order.status != 'delivered') {
         return next(new ErrorClass('this order cannot be canceled', StatusCodes.CONFLICT))
