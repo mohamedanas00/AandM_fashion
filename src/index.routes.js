@@ -19,9 +19,7 @@ const initApp = (app, express) => {
     app.use(morgan('tiny'))
 
     app.use((req, res, next) => {
-        console.log(req.originalUrl);
-        if (req.originalUrl == '/webhook') {
-            console.log("webhoook2️⃣2️⃣2️⃣2️⃣2️⃣");
+        if (req.originalUrl == '/order/webhook') {
             next();
         } else {
             express.json({})(req, res, next)
