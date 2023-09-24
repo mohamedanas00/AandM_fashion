@@ -23,7 +23,7 @@ const orderSchema = Schema({
     phone: { type: String, required: true },
     note: { type: String, max: 200 },
     paymentMethod: { type: String, enum: ['cash', 'card'], default: 'card' },
-    status: { type: String, enum: ['waitPayment', 'placed', 'deliverd', 'canceled', 'refunded'], default: 'placed' },
+    status: { type: String, enum: ['waitPayment', 'placed', 'delivered', 'canceled', 'refunded'], default: 'placed' },
     couponId: { type: Schema.Types.ObjectId, ref: 'Coupon' }
 },
     {

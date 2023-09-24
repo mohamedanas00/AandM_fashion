@@ -20,7 +20,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         paymentMethod,
         couponCode,
     } = req.body
-    // if (!req.body.phone) {🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+    //! if (!req.body.phone) {🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
     //     console.log(req.user.phone);
     //     const incrept = req.user.phone
     //     console.log(CryptoJS.AES.decrypt(incrept, process.env.encrypt_key));
@@ -67,7 +67,7 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     }
     //================paymentMethod  + orderStatus =====
     let status;
-    paymentMethod == 'cash' ? (status = 'placed') : (status = 'pending')
+    paymentMethod == 'cash' ? (status = 'placed') : (status = 'waitPayment')
     //================OrderObject========
     const order = await orderModel.create({
         userId,
@@ -115,7 +115,6 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             const stripe = new Stripe(process.env.STRIP_KEY)
             let couponStrip
             if (req.coupon) {
-                console.log("fdfsfdsfvsvdsvknjvnfdjvnfvdsfdsf");
                 couponStrip = await stripe.coupons.create({
                     percent_off: req.coupon.amount,
                     duration: "once"
@@ -159,10 +158,8 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
 export const webhook = asyncHandler(async (req, res) => {
     const sig = request.headers['stripe-signature'];
     const stripe = new Stripe(process.env.STRIP_KEY)
-    console.log(1);
     let event = stripe.webhooks.constructEvent(request.body, sig, process.env.END_POINT_SECRETE);
 
-    console.log(2);
 
     // Handle the event
     switch (event.type) {
@@ -170,12 +167,10 @@ export const webhook = asyncHandler(async (req, res) => {
             const order = await orderModel.findByIdAndUpdate(event.data.object.metadata.orderId, {
                 status: 'placed'
             })
-            console.log(3);
 
             res.json({ order: "123" })
             break;
         default:
-            console.log(4);
 
             res.json({ message: 'In-valid payment' })
     }
