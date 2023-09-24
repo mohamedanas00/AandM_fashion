@@ -70,7 +70,7 @@ export const getUserCart = asyncHandler(async (req, res, next) => {
     const userCart = await cartModel.findOne({ userId: req.user._id })
         .populate([{
             path: 'products.productId',
-            select: 'name price payementPrice description image',
+            select: 'name price discount paymentPrice description image',
             populate: [
                 {
                     path: 'categoryId',
