@@ -17,11 +17,14 @@ const initApp = (app, express) => {
     //convert Buffer Data
     console.log('Morgan middleware is applied'); // Add this line
     app.use(morgan('tiny'))
-    app.use((req,res,next)=>{
-        if(req.originalUrl=='/order/webhook'){
+
+    app.use((req, res, next) => {
+        console.log(req.originalUrl);
+        if (req.originalUrl == '/webhook') {
+            console.log("webhoook2️⃣2️⃣2️⃣2️⃣2️⃣");
             next();
-        }else{
-            express.json()(req,res,next)
+        } else {
+            express.json({})(req, res, next)
         }
     })
     // app.use(express.json())

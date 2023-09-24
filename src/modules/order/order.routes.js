@@ -1,8 +1,7 @@
-import { Router } from "express";
+import express,{ Router } from "express";
 import * as orderController from './controller/order.js'
 import auth from "../../middleware/auth.js";
 import { userAuth } from "./order.endpoint.js";
-import express from "express";
 import * as validator from './order.validation.js'
 import { validation } from "../../middleware/validation.js";
 const orderRouter = Router()

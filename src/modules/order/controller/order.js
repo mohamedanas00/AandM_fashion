@@ -10,6 +10,7 @@ import Stripe from 'stripe';
 import CryptoJS from "crypto-js";
 import userModel from "../../../../DB/models/user.model.js"
 
+const stripe = new Stripe(process.env.STRIP_KEY)
 
 
 export const OrderFromCart = asyncHandler(async (req, res, next) => {
@@ -112,7 +113,6 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
         cart.products = []
         await cart.save()
         if (paymentMethod == 'card') {
-            const stripe = new Stripe(process.env.STRIP_KEY)
             let couponStrip
             if (req.coupon) {
                 couponStrip = await stripe.coupons.create({
@@ -156,23 +156,23 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
 
 
 export const webhook = asyncHandler(async (req, res) => {
-    const sig = request.headers['stripe-signature'];
-    const stripe = new Stripe(process.env.STRIP_KEY)
-    let event = stripe.webhooks.constructEvent(request.body, sig, process.env.END_POINT_SECRETE);
+    const sig = req.headers['stripe-signature'];
+    let event = stripe.webhooks.constructEvent(req.body, sig, process.env.END_POINT_SECRETE);
 
-
-    // Handle the event
-    switch (event.type) {
-        case 'checkout.session.completed':
-            const order = await orderModel.findByIdAndUpdate(event.data.object.metadata.orderId, {
-                status: 'placed'
-            })
-
-            res.json({ order: "123" })
-            break;
-        default:
-
-            res.json({ message: 'In-valid payment' })
+    console.log("SDADDSDASD🚨🚨🚨🚨");
+    if(event.type == 'checkout.session.completed'){
+        const order = await orderModel.findByIdAndUpdate(
+            event.data.object.metadata.orderId,
+            {
+                status:"placed",
+            },
+            {
+                new:true,
+            }
+        )
+        res.json({order})
+    }else{
+        res.json({message:"invalid payment"})
     }
 })
 
