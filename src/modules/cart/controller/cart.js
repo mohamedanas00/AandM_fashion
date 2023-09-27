@@ -8,7 +8,7 @@ import cartModel from "../../../../DB/models/cart.model.js";
 
 
 export const addCart = asyncHandler(async (req, res, next) => {
-    const { productId, quantity } = req.body
+    const { productId, quantity, size, color } = req.body
     const product = await productModel.findOne({ _id: productId })
     if (!product) {
         return next(new ErrorClass(`This product not Exist!`, StatusCodes.NOT_FOUND))
@@ -21,17 +21,27 @@ export const addCart = asyncHandler(async (req, res, next) => {
         })
         return next(new ErrorClass(`Out Of Stock`, StatusCodes.BAD_REQUEST))
     }
+    const foundItem = product.details.find(item => 
+        item.size === size &&
+        item.quantity >= quantity &&
+        item.colors.includes(color)
+    );
+    if(!foundItem){
+        return next(new ErrorClass(`This Size not available`, StatusCodes.BAD_REQUEST))
+    }
     const cart = await cartModel.findOne({ userId: req.user._id })
     //if not found findIndex return -1
     //if found findIndex return  0
     const productIndex = cart.products.findIndex((product => {
-        return product.productId == productId
+        return (product.productId == productId&&product.size == size&&product.color == color)
     }))
+
     if (productIndex == -1) {
         cart.products.push({
             productId,
-            quantity
-
+            quantity,
+            size,
+            color
         })
     } else {
         cart.products[productIndex].quantity = cart.products[productIndex].quantity + quantity
@@ -41,8 +51,8 @@ export const addCart = asyncHandler(async (req, res, next) => {
 })
 
 
-export const deleteFromeCart = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+export const deleteFromCart = asyncHandler(async (req, res, next) => {
+    const { id } = req.params; 
     const productExist = await productModel.findOne({
         _id: id
     })
@@ -68,25 +78,23 @@ export const deleteFromeCart = asyncHandler(async (req, res, next) => {
 export const getUserCart = asyncHandler(async (req, res, next) => {
 
     const userCart = await cartModel.findOne({ userId: req.user._id })
+    .select('size quantity color products')
         .populate([{
             path: 'products.productId',
-            select: 'name price discount paymentPrice description image',
+            select: 'name price discount paymentPrice description image -_id',
             populate: [
-                {
-                    path: 'categoryId',
-                    select: 'name -_id'
-                },
                 {
                     path: 'subcategoryId',
                     select: 'name -_id'
                 }
             ]
         }])
+
     let totalPrice = 0
 
     userCart.products.filter(element => {
         if (element?.productId) {
-            totalPrice += (element.productId.payementPrice * element.quantity)
+            totalPrice += (element.productId.paymentPrice * element.quantity)
             return element
         }
     })

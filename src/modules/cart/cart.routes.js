@@ -14,6 +14,6 @@ cartRouter.route('/')
 
 
 cartRouter.route('/:id')
-    .delete(auth(userAuth.Roles), validation(validator.deleteFromeCart), cartController.deleteFromeCart)
+    .delete(auth(userAuth.Roles), validation(validator.deleteFromCart), cartController.deleteFromCart)
 
 export default cartRouter
