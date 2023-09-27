@@ -8,46 +8,41 @@ export const addProduct = {
         price: joi.number().min(0).required(),
         discount: joi.number().min(0).max(100),
         description: joi.string().min(10).max(300).required(),
-        colors: joi.custom((value, helper) => {
-            value =JSON.parse(value)
+        details: joi.custom((value, helper) => {
+            value = JSON.parse(value)
             // Array check
             if (!Array.isArray(value)) {
-                return helper.message='value should be array.base'
+                return helper.message = 'value should be array.base'
             }
-
+            const errors = [];
             // Check if all elements are strings
-            for (const color of value) {
-                if (typeof color !== 'string') {
-                    return helper.message='array.string'
-
+            for (const detail of value) {
+                
+                if (typeof detail.size!== 'string') {
+                    errors.push('size should be a string');
                 }
 
-                // Validate each color using a regular expression
-                const colorRegex = /^[0-9A-Fa-f]{6}$|^[0-9A-Fa-f]{3}$/;
-                if (!color.match(colorRegex)) {
-                    return helper.message='array should be hexadecimal color'
+                
+                if (typeof detail.quantity !== "number") {
+                    errors.push('quantity should be a number');
+                }
+                
+                if (!Array.isArray(detail.quantity)) {
+                    errors.push('colors should be an array');
+                }
+
+                for (const color of detail.quantity) {
+                    const colorRegex = /^[0-9A-Fa-f]{6}$/;
+                    if (!color.match(colorRegex)) {
+                        errors.push('array colors should be hexadecimal color');
+                    }
                 }
             }
-
+            if (errors.length > 0) {
+                return helper.message = errors.join(', ');
+            } 
             return value;
-        }),
-        sizes: joi.custom((value,helper)=>{
-            value =JSON.parse(value)
-            // Array check
-            if (!Array.isArray(value)) {
-                return helper.message='value should be array.base'
-            }
-
-            // Check if all elements are strings
-            for (const size of value) {
-                if (typeof size !== 'string') {
-                    return helper.message='array.string'
-                }
-            }
-
-            return value;
-        }),
-        quantity: joi.number().min(1).required(),
+        }).required(),
         categoryId: generalFields.id,
         subcategoryId: generalFields.id,
         brandId: generalFields.id,

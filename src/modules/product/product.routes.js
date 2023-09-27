@@ -15,7 +15,7 @@ productRouter.route('/')
             { name: 'image', maxCount: 1 },
             { name: 'coverImages', maxCount: 5 }
         ]),
-        validation(validator.addProduct),
+        // validation(validator.addProduct),
         productController.addProduct
     )
     .get(

@@ -15,15 +15,13 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     req.body.createdBy = req.user._id
     const isNameExist = await productModel.findOne({ name: req.body.name })
     if (isNameExist) {
-        isNameExist.stock += Number(req.body.quantity)
-        await isNameExist.save()
-
+        //*Add To Exist product 
+        await addToExistProduct({ isNameExist, req })
         return res.status(StatusCodes.ACCEPTED).json({ message: "Done", product: isNameExist })
     }
     const isCategoryExist = await categoryModel.findById(req.body.categoryId)
     const isSubcategoryExist = await subcategoryModel.findById(req.body.subcategoryId)
     const isBrandExist = await brandModel.findById(req.body.brandId)
-
     if (!isCategoryExist) {
         return next(new ErrorClass("category not Exist!", StatusCodes.NOT_FOUND))
     }
@@ -34,9 +32,17 @@ export const addProduct = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass("brand not Exist!", StatusCodes.NOT_FOUND))
     }
     req.body.slug = slugify(req.body.name.toLowerCase())
-    req.body.stock = Number(req.body.quantity)
 
     req.body.paymentPrice = req.body.price - (req.body.price * ((req.body.discount || 0) / 100))
+
+
+    let totalQuantity = 0;
+    let detailsArray = JSON.parse(req.body.details)
+    req.body.details = JSON.parse(req.body.details)
+    for (const sizeObject of detailsArray) {
+        totalQuantity += Number( sizeObject.quantity);
+    }
+    req.body.stock = totalQuantity
     
     const { secure_url, public_id } = await cloudinary.uploader.upload(req.files.image[0].path, { folder: `E-commerce/product/${req.body.slug}/image` })
     req.body.image = { secure_url, public_id }
@@ -48,12 +54,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
         }
         req.body.coverImages = coverImages
     }
-    if (req.body.sizes) {
-        req.body.sizes = JSON.parse(req.body.sizes)
-    }
-    if (req.body.colors) {
-        req.body.colors = JSON.parse(req.body.colors)
-    }
+    
     req.body.QRcode = await QRCode.toDataURL(JSON.stringify({
         name: req.body.name,
         description: req.body.description,
@@ -62,6 +63,7 @@ export const addProduct = asyncHandler(async (req, res, next) => {
         paymentPrice: req.body.paymentPrice,
         image: req.body.image.secure_url
     }))
+    
     const product = await productModel.create(req.body)
     res.status(StatusCodes.CREATED).json({ message: "Done", product })
 })
@@ -84,9 +86,9 @@ export const deleteProducts = deleteGlModel(productModel, "product")
 
 export const updateProducts = asyncHandler(async (req, res, next) => {
     const { id } = req.params
-    const {name,price,discount,colors,sizes}=req.body
+    const { name, price, discount} = req.body
     const isExist = await productModel.findById(id)
-    if(!isExist){
+    if (!isExist) {
         return next(new ErrorClass('Product not Exist!', StatusCodes.NOT_FOUND))
     }
     if (name) {
@@ -99,21 +101,43 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
         }
         var slug = slugify(name.toLowerCase())
     }
-    if(discount){
-        var paymentPrice= 0
-        if(price){
-           paymentPrice = price - (price * ((discount || 0) / 100))
-        }else{
+    if (discount) {
+        var paymentPrice = 0
+        if (price) {
+            paymentPrice = price - (price * ((discount || 0) / 100))
+        } else {
             paymentPrice = isExist.price - (isExist.price * ((discount || 0) / 100))
         }
     }
-    await productModel.updateOne({ _id:id},{
+    await productModel.updateOne({ _id: id }, {
         name,
         slug,
         price,
         discount,
-        colors,
-        sizes,
         paymentPrice,
     })
 })
+
+
+const addToExistProduct = async ({ isNameExist, req } = {}) => {
+    let totalQuantity = 0
+    const detailsArray = JSON.parse(req.body.details)
+    for (const sizeObject of detailsArray) {
+        let check = false 
+        for(let i = 0; i < isNameExist.details.length; i++){
+            if (isNameExist.details[i].size == sizeObject.size) {
+                isNameExist.details[i].quantity += sizeObject.quantity
+                totalQuantity += sizeObject.quantity;
+                isNameExist.details[i].colors = Array.from(new Set([...isNameExist.details[i].colors, ...sizeObject.colors]));
+                check = true 
+                break
+            } 
+        }
+        if(!check){
+            totalQuantity+=sizeObject.quantity;
+            isNameExist.details.push(sizeObject)
+        }
+    }
+    isNameExist.stock += totalQuantity
+    await isNameExist.save()
+}
