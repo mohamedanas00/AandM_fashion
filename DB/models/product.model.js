@@ -24,8 +24,20 @@ const productSchema = Schema({
     sold: { type: Number, default: 0, min: 0 },
     image: { type: Object, required: true },
     coverImages: { type: Array },
-    colors: { type: Array },
-    sizes: { type: Array },
+    details: [{
+        size: {
+            type: String,
+            required: true,
+        },
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        colors: {
+            type: Array,
+            required: true,
+        }
+    }],
     ratingAvg: { type: Number, max: 5, min: 0, default: 0 },
     rateCount: { type: Number, min: 0, default: 0 },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true },
