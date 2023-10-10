@@ -2,12 +2,12 @@ import { Schema, model } from "mongoose";
 
 import * as hooks from '../hooks/user.hooks.js'
 
-const userSchema = Schema({
+const userSchema =new Schema({
     name: {
         type: String,
         lowercase: true,
         required: true,
-        trim: true//delte space from first and end
+        trim: true//delete space from first and end
     },
     email: {
         type: String,
