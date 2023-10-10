@@ -10,6 +10,7 @@ import Stripe from 'stripe';
 import CryptoJS from "crypto-js";
 import userModel from "../../../../DB/models/user.model.js"
 import { cardPayment } from "../../../utils/cardStripPayment.js"
+import { invoiceStructure } from "../../../utils/invoiceStructure.js"
 
 const stripe = new Stripe(process.env.STRIP_KEY)
 
@@ -45,14 +46,16 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
     let orderProducts = []
     let subTotalCart = 0
     for (const product of cart.products) {
-        const isproductExist = await productModel.findById(product.productId)
-        subTotalCart = subTotalCart + (isproductExist.paymentPrice * product.quantity),
+        const isProductExist = await productModel.findById(product.productId)
+        subTotalCart = subTotalCart + (isProductExist.paymentPrice * product.quantity),
             orderProducts.push({
                 product: {
-                    name: isproductExist.name,
-                    price: isproductExist.price,
-                    paymentPrice: isproductExist.paymentPrice * product.quantity,
+                    name: isProductExist.name,
+                    price: isProductExist.price,
+                    paymentPrice: isProductExist.paymentPrice * product.quantity,
                     productId: product.productId,
+                    size: product.size,
+                    color: product.color,
                 },
                 quantity: product.quantity,
             })
@@ -99,24 +102,36 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
             }
             await req.coupon.save()
         }
-        //*===decrease product's stock by order's product quantity====
+        //*===decrease product's stock and details quantity====
         for (const product of cart.products) {
-            await productModel.findOneAndUpdate(
+            let productFound = await productModel.findOneAndUpdate(
                 { _id: product.productId },
                 {
                     $inc: { stock: -parseInt(product.quantity) },
                 },
+                {
+                    new: true
+                }
             )
+            for (let i = 0; i < productFound.details.length; i++) {
+                if (productFound.details[i].size == product.size && productFound.details[i].colors.includes(product.color)) {
+                    productFound.details[i].quantity -= product.quantity
+                    break
+                }
+            }
+            await productFound.save()
         }
+
         //*remove products from userCart if exist
         cart.products = []
         await cart.save()
+        //*card Payment using stripe
         if (paymentMethod == 'card') {
             const session = await cardPayment({ req, stripe, order, next })
             if (session) {
                 return res.json({ success: true, results: session.url, order })
-            }else{
-                return next (new ErrorClass("Session creation failed:",StatusCodes.BAD_REQUEST))
+            } else {
+                return next(new ErrorClass("Session creation failed:", StatusCodes.BAD_REQUEST))
             }
         }
         res.status(StatusCodes.OK).json({ message: 'Done', order })
@@ -130,7 +145,6 @@ export const OrderFromCart = asyncHandler(async (req, res, next) => {
 export const webhook = asyncHandler(async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event = stripe.webhooks.constructEvent(req.body, sig, process.env.END_POINT_SECRETE);
-
     if (event.type == 'checkout.session.completed') {
         const order = await orderModel.findByIdAndUpdate(
             event.data.object.metadata.orderId,
@@ -141,6 +155,7 @@ export const webhook = asyncHandler(async (req, res) => {
                 new: true,
             }
         )
+        invoiceStructure(order)
         res.json({ order })
     } else {
         res.json({ message: "invalid payment" })

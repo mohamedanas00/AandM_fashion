@@ -8,7 +8,7 @@ import { sendEmail, emailHtml } from "../../../utils/email.js";
 import { nanoid } from "nanoid";
 import { generateToken } from "../../../utils/generateAndVerifyToken.js";
 import cartModel from "../../../../DB/models/cart.model.js";
-// import OAuth2Client from 'google-auth-library';
+// import {OAuth2Client} from 'google-auth-library';
 // const client = new OAuth2Client();
 
 export const signUp = asyncHandler(async (req, res, next) => {
@@ -44,7 +44,7 @@ export const confirmEmail = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass(`Email Already Confirmed!`, StatusCodes.NOT_ACCEPTABLE))
     }
     if (code != isEmailExist.confirmCode) {
-        return next(new ErrorClass(`In-Valide code`, StatusCodes.BAD_REQUEST))
+        return next(new ErrorClass(`In-Valid code`, StatusCodes.BAD_REQUEST))
     }
     const newCode = nanoid(4)
     await userModel.updateOne({ email }, { confirmEmail: true, confirmCode: newCode })
@@ -55,7 +55,7 @@ export const logIn = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body
     const isExist = await userModel.findOne({ email })
     if (!isExist) {
-        return next(new ErrorClass(`In-valide user Information`, StatusCodes.NOT_ACCEPTABLE))
+        return next(new ErrorClass(`In-valid user Information`, StatusCodes.NOT_ACCEPTABLE))
     }
     if(isExist.confirmEmail==false){
         return next(new ErrorClass(`NON_AUTHORITATIVE`, StatusCodes.NON_AUTHORITATIVE_INFORMATION))
@@ -65,7 +65,7 @@ export const logIn = asyncHandler(async (req, res, next) => {
     }
     const match = compare(password, isExist.password)
     if (!match) {
-        return next(new ErrorClass(`In-valide user Information`, StatusCodes.NOT_ACCEPTABLE))
+        return next(new ErrorClass(`In-valid user Information`, StatusCodes.NOT_ACCEPTABLE))
     }
     const payload = {
         id: isExist._id,
@@ -97,7 +97,7 @@ export const restPassword = asyncHandler(async (req, res, next) => {
         return next(new ErrorClass(`This user not Exist!`, StatusCodes.NOT_FOUND))
     }
     if (code != isEmailExist.confirmCode) {
-        return next(new ErrorClass(`In-Valide code`, StatusCodes.BAD_REQUEST))
+        return next(new ErrorClass(`In-Valid code`, StatusCodes.BAD_REQUEST))
     }
     password = hash(password)
     const newCode = nanoid(4)
@@ -109,12 +109,14 @@ export const restPassword = asyncHandler(async (req, res, next) => {
 })
 
 // export const socialLogin =asyncHandler( async (req,res,next)=>{
-//     const {idToken,phone,birthday} =req.body
+//     const {idToken} =req.body
+//     console.log({message:idToken});
+
 //     const ticket = await client.verifyIdToken({
 //         idToken,
-//         //?clientId
-//         audience:,
+//         audience:process.env.Client_ID,
 //     })
+//     console.log("🚨🚨🚨🚨🚨");
 //     const {email , name } =ticket.getPayload();
 //     const isExist = await userModel.findOne({email})
 //     if(!isExist){
@@ -122,13 +124,9 @@ export const restPassword = asyncHandler(async (req, res, next) => {
 //             name,
 //             email,
 //             password:nanoid(6),
-//             phone,
 //             confirmEmail:true,
 //             provider:'google',
 //         })
-//         if(birthday){
-//             newUser.birthday=birthday
-//         }
 //         await newUser.save()
 //         await cartModel.create({userId: newUser._id})
 //         const payload = {
@@ -143,10 +141,10 @@ export const restPassword = asyncHandler(async (req, res, next) => {
 //             email: isExist.email
 //         }
 //         const token = generateToken(payload)
-//         return res.status(StatusCodes.CREATED).json({message:"done",Token:token})
+//         return res.status(StatusCodes.OK).json({message:"done",Token:token})
 //     }else if(isExist&& isExist.provider == 'system' ){
 //         return next(new ErrorClass('Please use system login'),StatusCodes.CONFLICT)
 //     }
-//     return next(new ErrorClass('Please SignUp in Google First!'),StatusCodes.CONFLICT)
+//     return next(new ErrorClass('Please SignUp in Google First Or using system SignUp!'),StatusCodes.CONFLICT)
 
 // })

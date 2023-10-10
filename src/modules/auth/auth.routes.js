@@ -11,7 +11,7 @@ authRouter.patch('/', validation(validator.confirmEmail), authController.confirm
 authRouter.post('/logIn', validation(validator.logIn), authController.logIn)
 authRouter.patch('/sendCode', validation(validator.sendCode), authController.sendCode)
 authRouter.put('/restPassword', authController.restPassword)
-
+// authRouter.post('/socialLogin',authController.socialLogin)
 
 
 export default authRouter
