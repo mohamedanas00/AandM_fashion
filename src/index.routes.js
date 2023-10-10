@@ -22,7 +22,7 @@ const initApp = (app, express) => {
         if (req.originalUrl == '/order/webhook') {
             next();
         } else {
-            express.limit(100000000).json({})(req, res, next)
+            express.json({limit: '50mb'})(req, res, next)
         }
     })
     // app.use(express.json())
