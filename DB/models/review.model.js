@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const reviewSchema = Schema({
+const reviewSchema =new Schema({
     comment: { type: String, lowercase: true, required: true, trim: true },
     productId: { type: Schema.Types.ObjectId, ref: "Product", required: true, },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },

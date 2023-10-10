@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const subcategorySchema = Schema({
+const subcategorySchema =new Schema({
     name: {
         type: String,
         unique: true,
