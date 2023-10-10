@@ -7,7 +7,7 @@ const categorySchema = Schema({
         lowercase: true,
         required: true,
         minlength: [2, 'too short category name'],
-        trim: true//delte space from first and end
+        trim: true//delete space from first and end
     },
     slug: {
         type: String,
