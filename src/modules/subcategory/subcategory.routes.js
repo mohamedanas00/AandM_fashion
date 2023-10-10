@@ -12,8 +12,8 @@ const subcategoryRouter = Router({ mergeParams: true })
 
 subcategoryRouter.route('/')
     .get(
-        validation(validator.getAllSubcategors),
-        subcategoryController.getAllSubcategors
+        validation(validator.getAllSubcategories),
+        subcategoryController.getAllSubcategories
     )
     .post(
         auth(userAuth.Roles),
@@ -30,7 +30,6 @@ subcategoryRouter.route('/:id')
     )
     .put(
         auth(userAuth.Roles),
-        validation(validator.updateSubcategory),
         fileUpload(fileValidation.image).single('image'),
         validation(validator.updateSubcategory),
         subcategoryController.updateSubcategory

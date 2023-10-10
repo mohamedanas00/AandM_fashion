@@ -25,7 +25,7 @@ export const updateSubcategory = {
     file: generalFields.file
 }
 
-export const getAllSubcategors = {
+export const getAllSubcategories = {
     params: joi.object().required().keys({}),
     body: joi.object().required().keys({}),
 }
