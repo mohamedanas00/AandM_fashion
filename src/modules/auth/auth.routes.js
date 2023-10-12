@@ -8,7 +8,9 @@ const authRouter = Router()
 
 authRouter.post('/signUp', validation(validator.signUp), authController.signUp)
 authRouter.patch('/', validation(validator.confirmEmail), authController.confirmEmail)
-authRouter.post('/logIn', validation(validator.logIn), authController.logIn)
+authRouter.post('/adminLogIn', validation(validator.logIn), authController.adminLogIn)
+authRouter.post('/userLogIn', validation(validator.logIn), authController.userLogIn)
+
 authRouter.patch('/sendCode', validation(validator.sendCode), authController.sendCode)
 authRouter.put('/restPassword', authController.restPassword)
 // authRouter.post('/socialLogin',authController.socialLogin)
