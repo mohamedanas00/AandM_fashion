@@ -108,7 +108,6 @@ export const deleteProducts = asyncHandler(async (req, res, next) => {
       new ErrorClass(`This product Not Exist!`, StatusCodes.NOT_FOUND)
     );
   }
-
   await cloudinary.uploader.destroy(isExist.image.public_id);
   for (const image of isExist.coverImages) {
     await cloudinary.uploader.destroy(image.public_id);
@@ -146,6 +145,15 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
       paymentPrice = isExist.price - isExist.price * ((discount || 0) / 100);
     }
   }
+  if(req.files.image){
+    await cloudinary.uploader.destroy(isExist.image.public_id);
+    const { secure_url, public_id } = await cloudinary.uploader.upload(
+        req.files.image[0].path,
+        { folder: `E-commerce/product/${req.body.slug}/image` }
+    );
+    req.body.image = { secure_url, public_id };
+  }
+
   await productModel.updateOne(
     { _id: id },
     {
@@ -154,6 +162,7 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
       price,
       discount,
       paymentPrice,
+      image:req.body.image
     }
   );
 });

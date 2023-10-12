@@ -45,7 +45,6 @@ const productSchema =new Schema({
     brandId: { type: Schema.Types.ObjectId, ref: "Brand", required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     QRcode: { type: String, required: true },
-    wishList: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 },
     {
         timestamps: true,
