@@ -1,20 +1,50 @@
 import { Router } from "express";
-import * as userController from './controller/user.js'
-import * as validator from './user.validation.js'
+import * as userController from "./controller/user.js";
+import * as validator from "./user.validation.js";
 import { validation } from "../../middleware/validation.js";
 import auth, { roles } from "../../middleware/auth.js";
-const userRouter = Router()
+import { userAuth } from "./user.endpoint.js";
 
-userRouter.route('/')
-    .delete(auth([roles.user]),validation(validator.deleteAccount) ,userController.deleteAccount)
-    .put(auth([roles.user]),validation(validator.updateProfile) ,userController.updateProfile)
-    .get(auth([roles.user]),validation(validator.getUserData),userController.getUserData)
+const userRouter = Router();
 
-userRouter.route('/favourite')
-    .get(auth([roles.user]),userController.getFavouriteProducts)
+userRouter
+  .route("/")
+  .delete(
+    auth(userAuth.userRole),
+    validation(validator.basic),
+    userController.deleteAccount
+  )
+  .put(
+    auth(userAuth.userRole),
+    validation(validator.updateProfile),
+    userController.updateProfile
+  )
+  .get(
+    auth(userAuth.userRole),
+    validation(validator.basic),
+    userController.getUserData
+  );
 
+userRouter
+  .route("/Favorite")
+  .get(
+    auth(userAuth.userRole),
+    validation(validator.basic),
+    userController.getFavoriteProducts
+  );
 
-userRouter.route('/:id')
-    .patch(auth([roles.user]),userController.addToFavourite)
+userRouter
+  .route("/:id")
+  .patch(
+    auth(userAuth.userRole),
+    validation(validator.addToFavorite),
+    userController.addToFavorite
+  );
 
-export default userRouter
+userRouter.get(
+  "/RegularUsers",
+  auth(userAuth.adminRole),
+  validation(validator.basic),
+  userController.getAllRegularUsers
+);
+export default userRouter;

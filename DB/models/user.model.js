@@ -45,7 +45,7 @@ const userSchema =new Schema({
         default:'system',
         enum:['system','google']
     },
-    favouriteProducts:[{
+    favoriteProducts:[{
         type: Schema.Types.ObjectId,
         ref: 'Product'
     }],
