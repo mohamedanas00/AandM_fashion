@@ -8,7 +8,6 @@ import slugify from "slugify";
 import cloudinary from "../../../utils/cloudinary.js";
 import brandModel from "../../../../DB/models/brand.model.js";
 import { ApiFeatures } from "../../../utils/apiFeatures.js";
-import { deleteGlModel } from "../../global/handlers/delete.js";
 import QRCode from "qrcode";
 
 export const addProduct = asyncHandler(async (req, res, next) => {
