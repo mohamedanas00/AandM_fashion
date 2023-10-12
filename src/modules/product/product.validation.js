@@ -47,7 +47,7 @@ export const addProduct = {
         subcategoryId: generalFields.id,
         brandId: generalFields.id,
     }).required(),
-    file: generalFields.file,
+    file: generalFields.file.required(),
     query: joi.object().required().keys({}),
 }
 
@@ -64,6 +64,8 @@ export const updateProducts = {
     query: joi.object({
         id: generalFields.id
     }).required(),
+    file: generalFields.file,
+
 }
 
 export const getAllProducts = {

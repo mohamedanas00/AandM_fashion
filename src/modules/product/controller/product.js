@@ -117,12 +117,12 @@ export const deleteProducts = asyncHandler(async (req, res, next) => {
 
 export const updateProducts = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { name, price, discount } = req.body;
   const isExist = await productModel.findById(id);
   if (!isExist) {
     return next(new ErrorClass("Product not Exist!", StatusCodes.NOT_FOUND));
   }
-  if (name) {
+  if (req.body.name) {
+    const name = req.body.name;
     const isNameExist = await productModel.findOne({
       name,
       _id: { $ne: id },
@@ -135,21 +135,24 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
         )
       );
     }
-    var slug = slugify(name.toLowerCase());
+    var slug = slugify(req.body.name.toLowerCase());
   }
-  if (discount) {
+
+  if (req.body.discount && req.body.price) {
     var paymentPrice = 0;
-    if (price) {
-      paymentPrice = price - price * ((discount || 0) / 100);
-    } else {
-      paymentPrice = isExist.price - isExist.price * ((discount || 0) / 100);
-    }
+    paymentPrice = req.body.price - req.body.price * (req.body.discount / 100);
+  } else if (req.body.price) {
+    var paymentPrice = 0;
+    paymentPrice = req.body.price - req.body.price * (isExist.discount / 100);
+  } else if (req.body.discount) {
+    var paymentPrice = 0;
+    paymentPrice = isExist.price - isExist.price * (req.body.discount / 100);
   }
-  if(req.files.image){
+  if (req.file) {
     await cloudinary.uploader.destroy(isExist.image.public_id);
     const { secure_url, public_id } = await cloudinary.uploader.upload(
-        req.files.image[0].path,
-        { folder: `E-commerce/product/${req.body.slug}/image` }
+      req.file.path,
+      { folder: `E-commerce/product/${slug}/image` }
     );
     req.body.image = { secure_url, public_id };
   }
@@ -157,14 +160,16 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
   await productModel.updateOne(
     { _id: id },
     {
-      name,
+      name: req.body.name,
       slug,
-      price,
-      discount,
+      price:req.body.price,
+      discount: req.body.discount,
       paymentPrice,
-      image:req.body.image
+      image: req.body.image,
     }
   );
+
+  return res.status(StatusCodes.OK).json({message:"Done"})
 });
 
 const addToExistProduct = async ({ isNameExist, req } = {}) => {
