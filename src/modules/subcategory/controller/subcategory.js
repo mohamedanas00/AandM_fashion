@@ -47,11 +47,7 @@ export const getAllSubcategories = asyncHandler(async (req, res, next) => {
     .search()
     .sort()
     .filter();
-  let Subcategories = await apiFeatures.mongooseQuery.populate([
-    {
-      path: "categoryId",
-    },
-  ]);
+  let Subcategories = await apiFeatures.mongooseQuery.select('-categoryId -createdBy');
   res.status(StatusCodes.OK).json({
     Current_Page: apiFeatures.page,
     Next_Page: apiFeatures.next,
