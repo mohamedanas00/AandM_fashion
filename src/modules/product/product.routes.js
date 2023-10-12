@@ -29,5 +29,6 @@ productRouter.route('/:id')
         auth(userAuth.Roles),
         validation(idValidation), productController.deleteProducts)
     .put(auth(userAuth.Roles),    fileUpload(fileValidation.image).single("image"),
-     productController.updateProducts)
+     validation(validator.updateProducts),productController.updateProducts)
+    .patch(auth(userAuth.Roles),fileUpload(fileValidation.image).single("image"),productController.updateCoverImage)
 export default productRouter

@@ -162,14 +162,40 @@ export const updateProducts = asyncHandler(async (req, res, next) => {
     {
       name: req.body.name,
       slug,
-      price:req.body.price,
+      price: req.body.price,
       discount: req.body.discount,
       paymentPrice,
       image: req.body.image,
     }
   );
 
-  return res.status(StatusCodes.OK).json({message:"Done"})
+  return res.status(StatusCodes.OK).json({ message: "Done" });
+});
+
+export const updateCoverImage = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { publicId } = req.body;
+  const isExist = await productModel.findById(id);
+  if (!isExist) {
+    return next(new ErrorClass("Product not Exist!", StatusCodes.NOT_FOUND));
+  }
+  await cloudinary.uploader.destroy(publicId);
+
+  await productModel.updateOne(
+    { _id: id },
+    {
+      $pull: { coverImages: { publicId: publicId } },
+    }
+  );
+
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    { folder: `E-commerce/product/${isExist.slug}/coverImages` }
+  );
+
+  isExist.coverImages = isExist.coverImages.push({ secure_url, public_id });
+  await isExist.save();
+  return res.status(StatusCodes.OK).json({ message: "Done" });
 });
 
 const addToExistProduct = async ({ isNameExist, req } = {}) => {
