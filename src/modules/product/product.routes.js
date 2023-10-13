@@ -39,5 +39,6 @@ productRouter
     fileUpload(fileValidation.image).single("image"),
     validation(validator.updateCoverImage),
     productController.updateCoverImage
-  );
+  )
+  .get(productController.getSubCategoryProducts);
 export default productRouter;

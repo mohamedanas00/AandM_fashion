@@ -197,6 +197,28 @@ export const updateCoverImage = asyncHandler(async (req, res, next) => {
   return res.status(StatusCodes.OK).json({ message: "Done" });
 });
 
+export const getSubCategoryProducts = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  let apiFeatures = new ApiFeatures(
+    productModel.find({ subcategoryId: id }),
+    req.query
+  )
+    .fields()
+    .pagination(productModel)
+    .search()
+    .sort()
+    .filter();
+  let products = await apiFeatures.mongooseQuery;
+  res.status(StatusCodes.OK).json({
+    Current_Page: apiFeatures.page,
+    Next_Page: apiFeatures.next,
+    Previous_Page: apiFeatures.previous,
+    Total_Pages: apiFeatures.totalPages,
+    Products_Count: apiFeatures.countDocuments,
+    products,
+  });
+});
+
 const addToExistProduct = async ({ isNameExist, req } = {}) => {
   let totalQuantity = 0;
   const detailsArray = JSON.parse(req.body.details);
