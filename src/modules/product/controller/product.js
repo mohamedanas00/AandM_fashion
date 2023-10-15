@@ -90,7 +90,7 @@ export const getAllProducts = asyncHandler(async (req, res, next) => {
     .filter();
   let products = await apiFeatures.mongooseQuery.populate({
     path: 'createdBy',
-    select: 'email -_id',
+    select: 'email name',
   });
   res.status(StatusCodes.OK).json({
     Current_Page: apiFeatures.page,
