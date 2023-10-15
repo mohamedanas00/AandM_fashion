@@ -70,9 +70,9 @@ export const addProduct = asyncHandler(async (req, res, next) => {
     JSON.stringify({
       name: req.body.name,
       description: req.body.description,
-      price: req.body.price,
+      originalPrice: req.body.price,
       discount: req.body.discount,
-      paymentPrice: req.body.paymentPrice,
+      finalPrice: req.body.paymentPrice,
       image: req.body.image.secure_url,
     })
   );
