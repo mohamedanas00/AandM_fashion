@@ -88,7 +88,10 @@ export const getAllProducts = asyncHandler(async (req, res, next) => {
     .search()
     .sort()
     .filter();
-  let products = await apiFeatures.mongooseQuery;
+  let products = await apiFeatures.mongooseQuery.populate({
+    path: 'createdBy',
+    select: 'email -_id',
+  });
   res.status(StatusCodes.OK).json({
     Current_Page: apiFeatures.page,
     Next_Page: apiFeatures.next,
